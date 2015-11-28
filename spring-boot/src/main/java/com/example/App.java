@@ -1,9 +1,9 @@
 package com.example;
 
-import com.example.com.example.audit.TranslationLog;
-import com.example.com.example.audit.TranslationRepository;
-import com.example.com.example.dictionary.Dictionary;
-import com.example.com.example.dictionary.DictionaryWord;
+import com.example.audit.TranslationLog;
+import com.example.audit.TranslationRepository;
+import com.example.dictionary.Dictionary;
+import com.example.dictionary.DictionaryWord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 @EnableAutoConfiguration

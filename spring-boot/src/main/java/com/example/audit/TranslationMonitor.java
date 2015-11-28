@@ -1,6 +1,6 @@
-package com.example.com.example.audit;
+package com.example.audit;
 
-import com.example.com.example.dictionary.DictionaryWord;
+import com.example.dictionary.DictionaryWord;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

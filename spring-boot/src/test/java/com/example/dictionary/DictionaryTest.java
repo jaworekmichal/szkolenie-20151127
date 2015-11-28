@@ -1,7 +1,5 @@
-package com.example.com.example.dictionary;
+package com.example.dictionary;
 
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;

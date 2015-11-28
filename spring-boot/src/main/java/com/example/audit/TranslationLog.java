@@ -1,4 +1,4 @@
-package com.example.com.example.audit;
+package com.example.audit;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

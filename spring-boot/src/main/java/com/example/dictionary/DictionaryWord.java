@@ -1,4 +1,4 @@
-package com.example.com.example.dictionary;
+package com.example.dictionary;
 
 public class DictionaryWord {
 

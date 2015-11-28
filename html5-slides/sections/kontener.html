@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta content="Asciidoctor 1.5.3" name="generator">
+<title>Moduł 2: Kontener Spring</title>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="../deck.js/core/deck.core.css" rel="stylesheet">
+<link href="../deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/menu/deck.menu.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/navigation/deck.navigation.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/status/deck.status.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/style/swiss.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/transition/fade.css" media="screen" rel="stylesheet">
+<link href="../style.css" rel="stylesheet">
+<link href="../deck.js/core/print.css" media="print" rel="stylesheet">
+<script src="../deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Moduł 2: Kontener Spring</h1>
+</section>
+<section class="slide" id="kontener-spring">
+<h2>Kontener Spring</h2>
+<div class="ulist">
+<ul>
+<li>Kontener, fabryka komponentów</li>
+<li>Tworzenie komponentów</li>
+<li>Standard JSR-330</li>
+<li>Konfiguracja kontekstu: adnotacje, XML, JavaConfiguration</li>
+<li>Zakresy komponentów</li>
+<li>Cykl życia komponentu</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="wewnętrzne-zależności">
+<h2>Wewnętrzne zależności</h2>
+<div class="ulist">
+<ul>
+<li>Kod trudny w testowaniu, rozbudowie, utrzymaniu</li>
+<li>Kod staje się niemożliwy do przeniesienia</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ShopServlet</span> <span class="directive">extends</span> HttpServlet {
+  <span class="directive">private</span> ShopDao shopDao;
+
+  <span class="directive">public</span> ShopServlet() {
+    shopDao = <span class="keyword">new</span> ShopDao();
+    PasswordVerifier.getInstance().verify();
+  }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="wewnętrzne-zależności-2">
+<h2>Wewnętrzne zależności</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Używanie obiektów typu POJO<div class="ulist">
+<ul>
+<li>Obiekty nie związane z jakimkolwiek API</li>
+<li>Zapewnia testowalność i przenaszalność kodu</li>
+</ul>
+</div></p></li>
+<li><p>
+Programowanie poprzez interfejsy<div class="ulist">
+<ul>
+<li>Powiązania między interfejsami czynią kod bardziej elastycznym</li>
+<li>Nadużywanie interfejsów może być bardziej kłopotliwe niż ich brak</li>
+</ul>
+</div></p></li>
+<li>Wstrzykiwanie zależności</li>
+<li>Podejście aspektowe</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="kontener-spring-2">
+<h2>Kontener Spring</h2>
+<div class="ulist">
+<ul>
+<li>Fabryka komponentów: dostarcza obiektów gotowych do użycia.</li>
+<li>Rozwiązuje zależności pomiędzy komponentami; w sposób automatyczny bądź na podstawie konfiguracji.</li>
+<li>Zarządza cyklem życia obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="komponent-spring">
+<h2>Komponent Spring</h2>
+<div class="ulist">
+<ul>
+<li>Aby Spring rozpoczął zarządzanie obiektem należy umieścić go w kontenerze</li>
+<li>Umieszczenie polega na dodaniu wpisu do deskryptora XML lub dodaniu adnotacji do klasy obiektu</li>
+<li>Obiekt umieszczony w kontenerze staje się komponentem zarządzanym (managed bean)</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="kontener">
+<h2>Kontener</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<code>BeanFactory</code><div class="ulist">
+<ul>
+<li>Tworzy komponenty i zarządza cyklem ich życia</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>ApplicationContext</code><div class="ulist">
+<ul>
+<li>Dostarcza mechanizm obsługi zdarzeń</li>
+<li>Wspiera internacjonalizację aplikacji</li>
+<li>Wstępnie inicjalizuje komponenty</li>
+<li>Rejestruje i uruchamia obiekty rozszerząjace cykl życia kontenera</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="em-beanfactory-em">
+<h2><em>BeanFactory</em></h2>
+<div class="ulist">
+<ul>
+<li><p>
+<code>XmlBeanFactory</code><div class="ulist">
+<ul>
+<li>Odczytuje konfigurację z pliku XML</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>SimpleJndiBeanFactory</code><div class="ulist">
+<ul>
+<li>Poszukuje komponentów zarejestrowanych w drzewie JNDI (na serwerze aplikacji) w przestrzeni <code>java:comp/env</code></li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="em-applicationcontext-em">
+<h2><em>ApplicationContext</em></h2>
+<div class="ulist">
+<ul>
+<li><p>
+<code>ClasspathXmlApplicationContext</code><div class="ulist">
+<ul>
+<li>Pobiera konfigurację XML z plików znajdujących się w ścieżce classpath. Wykorzystane w aplikacjach standalone</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>FileSystemXmlApplicationContext</code><div class="ulist">
+<ul>
+<li>Pobiera konfigurację XML z plików znajdujących się w systemie plików. Wykorzystane w aplikacjach standalone</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="em-applicationcontext-em-2">
+<h2><em>ApplicationContext</em> (2)</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<code>AnnotationConfigApplicationContext</code><div class="ulist">
+<ul>
+<li>Wykorzystuje konfigurację opartą o adnotację i JavaConfig. Wykorzystane w aplikacjach standalone</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>*WebApplicationContext</code><div class="ulist">
+<ul>
+<li>Kontekst wykorzystywany w aplikacjach webowych; konfiguracja odczytywana z katalogu WEB-INF</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>Static*ApplicationContext</code><div class="ulist">
+<ul>
+<li>Konfiguracja wykorzystywana w testach</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="tworzenie-komponentów">
+<h2>Tworzenie komponentów</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay nowrap"><code class="xml language-xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;beans</span> <span class="attribute-name">xmlns</span>=<span class="attribute-value">http:</span><span class="error">/</span><span class="error">/</span><span class="attribute-name">www.springframework.org</span><span class="error">/</span><span class="attribute-name">schema</span><span class="error">/</span><span class="attribute-name">beans</span>
+  <span class="attribute-name">xmlns:xsi</span>=<span class="attribute-value">http:</span><span class="error">/</span><span class="error">/</span><span class="attribute-name">www.w3.org</span><span class="error">/</span><span class="attribute-name">2001</span><span class="error">/</span><span class="attribute-name">XMLSchema-instance</span>
+  <span class="attribute-name">xmlns:context</span>=<span class="attribute-value">http:</span><span class="error">/</span><span class="error">/</span><span class="attribute-name">www.springframework.org</span><span class="error">/</span><span class="attribute-name">schema</span><span class="error">/</span><span class="attribute-name">context</span>
+  <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span>
+    <span class="content">http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+ 
+  <span class="tag">&lt;context:annotation-config</span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;context:component-scan</span>
+    <span class="attribute-name">base-package</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.*</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+<span class="tag">&lt;/beans&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="tworzenie-komponentów-2">
+<h2>Tworzenie komponentów</h2>
+<div class="paragraph lead"><p>Włącza obsługę adnotacji konfiguracyjnych – takich, które nie definiują komponentu</p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;context:annotation-config</span> <span class="tag">/&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="tworzenie-komponentów-3">
+<h2>Tworzenie komponentów</h2>
+<div class="paragraph lead"><p>Pozwala wykrywać adnotacje definiujące komponenty: <code>@Component</code>, <code>@Service</code>, <code>@Repository</code>, <code>@Controller</code></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;context:component-scan</span> <span class="attribute-name">base-package</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.spring.*</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="tworzenie-komponentów-4">
+<h2>Tworzenie komponentów</h2>
+<div class="paragraph"><p>Atrybuty <code>include-filter</code> oraz <code>exclude-filter</code> mogą regulować czy konkretne klasy zostaną dołączone do projektu.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;context:component-scan</span>
+  <span class="attribute-name">base-package</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.spring.*</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;context:exclude-filter</span>
+          <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">regex</span><span class="delimiter">&quot;</span></span>
+          <span class="attribute-name">expression</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">.*Service</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/context:component-scan&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="tworzenie-komponentów-5">
+<h2>Tworzenie komponentów</h2>
+<div class="ulist">
+<ul>
+<li>Adnotacja <code>@Component</code> jest wystarczająca aby dodać nowy komponent do kontekstu</li>
+<li>Adnotacje <code>@Service</code>, <code>@Resource</code> bądź <code>@Controller</code> dodatkowo opisują cel istnienia komponentu i umożliwiają budowę elastycznej konfiguracji</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Component</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExampleService</span> {
+        <span class="directive">public</span> <span class="predefined-type">String</span> getMessage() {
+                <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello world!</span><span class="delimiter">&quot;</span></span>;
+        }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="nazewnictwo">
+<h2>Nazewnictwo</h2>
+<div class="ulist">
+<ul>
+<li>Komponenty w Spring Framework rozróżniane są po nazwie</li>
+<li>Domyślna nazwa generowana jest automatycznie zgodnie z konwencją <em>JavaBeans</em></li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">shopService</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">foo.ShopService</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Component</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">myService</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ShopService</span> {
+        <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="Łączenie-komponentów">
+<h2>Łączenie komponentów</h2>
+<div class="ulist">
+<ul>
+<li>Adnotacją <code>@Autowired</code> można łączyć komponenty ze sobą.</li>
+<li>Oznaczamy pole klasy, modyfikator (<em>setter</em>) lub konstruktor</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Component</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExampleService</span> {
+
+        <span class="annotation">@Autowired</span> AnotherService service;
+
+        <span class="directive">public</span> <span class="predefined-type">String</span> getMessage() {
+                <span class="keyword">return</span> service.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">Hello world!</span><span class="delimiter">&quot;</span></span>);
+        }<span class="error"> </span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jsr-330">
+<h2>JSR 330</h2>
+<div class="ulist">
+<ul>
+<li>Adnotacje <code>@Named</code> i <code>@Inject</code> ustandaryzowały wstrzykiwanie zależności</li>
+<li>Gwarantują przenaszalność kodu pomiędzy frameworkami Dependency Injection <em>(Guice, CDI)</em>.</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Named</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExampleService</span> {
+
+        <span class="annotation">@Inject</span>
+        AnotherService service;
+
+        <span class="comment">//.. </span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="zakres-działania-komponentu">
+<h2>Zakres działania komponentu</h2>
+<div class="ulist">
+<ul>
+<li>W odróżnieniu od EJB – komponenty nie podlegają zarządzaniu w oparciu o pulę</li>
+<li><p>
+Podstawowe zakresy to: <strong>singleton</strong> i <strong>prototype</strong><div class="ulist">
+<ul>
+<li>Każde pobranie komponentu typu <strong>singleton</strong> zwróci referencję do tej samej instancji</li>
+<li>Przy każdym pobraniu komponentu <strong>prototype</strong> zostanie zwrócony nowy obiekt</li>
+</ul>
+</div></p></li>
+<li>Dodatkowe zakresy to <em>thread</em>, <em>request</em>, <em>session</em> i <em>globalSession</em>.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="cykl-życia-komponentów">
+<h2>Cykl życia komponentów</h2>
+<div class="paragraph lead"><p>Najpopularniejszą metodą połączenia komponentu ze zdarzeniami kontenera jest użycie adnotacji <code>@PostConstruct</code> i <code>@PreDestroy</code></p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Component</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExampleService</span> {
+
+        <span class="annotation">@PostConstruct</span> <span class="directive">public</span> <span class="type">void</span> startup() {
+                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Preparing the message...</span><span class="delimiter">&quot;</span></span>);
+        }
+
+        <span class="annotation">@PreDestroy</span> <span class="directive">public</span> <span class="type">void</span> shutdown() {
+                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">...finishing.</span><span class="delimiter">&quot;</span></span>);
+        }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="cykl-życia-komponentów-2">
+<h2>Cykl życia komponentów</h2>
+<div class="paragraph lead"><p>Implementując interfejsy <code>InitializingBean</code> oraz <code>DisposableBean</code>, wymuszana jest implementacja metod <em>afterPropertiesSet()</em> oraz <em>destroy()</em>.</p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Named</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">ExampleService</span> <span class="directive">implements</span>
+        InitializingBean, DisposableBean {
+
+        <span class="directive">public</span> <span class="type">void</span> afterPropertiesSet() <span class="directive">throws</span> <span class="exception">Exception</span> {
+                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">Preparing the message...</span><span class="delimiter">&quot;</span></span>);
+        }
+        <span class="directive">public</span> <span class="type">void</span> destroy() <span class="directive">throws</span> <span class="exception">Exception</span> {
+                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">...finishing.</span><span class="delimiter">&quot;</span></span>);
+        }<span class="error"> </span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="cykl-życia-komponentów-3">
+<h2>Cykl życia komponentów</h2>
+<div class="paragraph lead"><p>Bez konieczności implementowania specyficznych interfejsów można wymusić wywołanie poprzednich metod z poziomu konfiguracji XML</p></div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;bean</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.spring.example001.ExampleService</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">init-method</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">afterPropertiesSet</span><span class="delimiter">&quot;</span></span>
+        <span class="attribute-name">destroy-method</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">destroy</span><span class="delimiter">&quot;</span></span>
+<span class="tag">/&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">&#8592;</a>
+<a class="deck-next-link" href="#" title="Next">&#8594;</a>
+</div>
+<p aria-role="status" class="deck-status">
+<span class="deck-status-current"></span>
+/
+<span class="deck-status-total"></span>
+</p>
+</div>
+<script src="../deck.js/jquery.min.js"></script>
+<script src="../deck.js/core/deck.core.js"></script>
+<script src="../deck.js/extensions/scale/deck.scale.js"></script>
+<script src="../deck.js/extensions/menu/deck.menu.js"></script>
+<script src="../deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="../deck.js/extensions/status/deck.status.js"></script>
+<script>
+  (function($, deck, undefined) {
+    $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+    $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+  
+    $.extend(true, $[deck].defaults, {
+        countNested: false
+    });
+  
+    $.deck('.slide');
+  })(jQuery, 'deck');
+</script>
+<style>
+  .slide.canvas-image {
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: -moz-box;
+  display: -webkit-box;
+  display: -ms-box;
+  display: box;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+  -ms-box-orient: vertical;
+  box-orient: vertical;
+  -moz-box-align: start;
+  -webkit-box-align: start;
+  -ms-box-align: start;
+  box-align: start;
+  -moz-box-pack: start;
+  -webkit-box-pack: start;
+  -ms-box-pack: start;
+  box-pack: start;}
+  
+  .bottom-left {
+    left: 1%;
+    bottom: 20%; }
+  
+  .top-left {
+    left: 1%;
+    top: 20%; }
+  
+  .bottom-right {
+    right: 1%;
+    bottom: 20%; }
+  
+  .top-right {
+    right: 1%;
+    top: 20%; }
+  
+  .center-up {
+    right: 50%;
+    top: 1%;
+  }
+  
+  .center-down {
+    right: 50%;
+    bottom: 1%;
+  }
+  .canvas-image .canvas-caption p {
+    text-align: center;
+    padding-top: 0;
+    padding: 0;
+    -moz-transform: none;
+    -webkit-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+    display: inline;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    font-weight: bold;
+    font-size: 58px;
+    -webkit-box-shadow: 2px 2px 2px #000;
+    -moz-box-shadow: 2px 2px 2px #000;
+    box-shadow: 2px 2px 2px #000;
+    padding: 1rem;
+    color: white; }
+  kbd.keyseq { color: #555555; }
+  kbd:not(.keyseq) {
+    display: inline-block;
+    color: #222222;
+    font-size: 0.7em;
+    line-height: 1.4;
+    background-color: #F7F7F7;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    margin: -0.15em 0.15em 0 0.15em;
+    padding: 0.2em 0.6em;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  kbd kbd:first-child { margin-left: 0; }
+  kbd kbd:last-child { margin-right: 0; }
+</style>
+</body>
+</html>

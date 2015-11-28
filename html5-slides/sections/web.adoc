@@ -1,0 +1,324 @@
+= Moduł 7: Warstwa web
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Wprowadzenie do Spring MVC
+
+* Pojęcie FrontControllera i zasada działania aplikacji Spring MVC
+* Kontrolery i widoki
+* Odpowiedzi inne niż HTML (REST services)
+* Testowanie aplikacji Spring MVC
+    
+== Działanie Dispatcher Servet
+
+image::images/front-controller.png[]
+
+== Działanie Dispatcher Servet (2)
+
+* Zapytanie trafia do DispatcherServlet 
+* Spring MVC w oparciu o odpowiedni HandlerMapper wyszukuje kontroler do obsługi zapytania.
+* Kontroler obsługuje żądanie
+* Kontroler zwraca odpowiedź w określonym formacie
+* Na podstawie informacji zwróconych przez kontroler `DispatcherServlet` wybiera widok w oparciu o konfigurację `ViewResolver`.
+* Widok tworzy wynikową stronę HTML.
+
+== Konfiguracja web.xml
+
+* Konfiguracja DispatcherServlet
+* Spring zarządza cyklem życia żądania – w pełni używamy Spring MVC
+
+[source, xml]
+----
+<servlet>
+	<servlet-name>appServlet</servlet-name>
+	<servlet-class>
+		org.springframework.web.servlet.DispatcherServlet
+	</servlet-class>
+	<load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>appServlet</servlet-name>
+	<url-pattern>/</url-pattern>
+</servlet-mapping>
+
+
+----
+	
+== Konfiguracja web.xml (2)
+
+* Używając ContextLoaderListener możliwe jest użycie Springa (zarządzania komponentami) bez konieczności korzystania `DispatcherServlet` (Spring MVC)
+* Odczytany kontekst dostępny jest poprzez statyczne metody komponentu WebApplicationContextUtils.
+* Spring MVC jako pomost pomiędzy innymi frameworkami webowymi
+
+[source, xml]
+----
+<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>classpath:META-INF/spring/app-*.xml</param-value>
+</context-param>
+
+<listener>
+	<listener-class>
+		org.springframework.web.context.ContextLoaderListener
+	</listener-class>
+</listener>
+----
+	
+== Konfiguracja servlet-context.xml
+
+* Domyślna konfiguracja poprzez adnotacje
+* ViewResolver odpowiada za skierowanie zapytania do odpowiedniego widoku
+
+[source, xml]
+----
+<mvc:annotation-driven /> 
+<context:component-scan base-package="pl.devcastzone.todo" />
+
+<bean 
+class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="prefix" value="/WEB-INF/views/" />
+	<property name="suffix" value=".jsp" />
+</bean>
+----
+	
+== Konfiguracja DispatcherServlet poprzez adnotacje
+
+* Servlet 3.0 umożliwia inicjalizację bez web.xml
+
+[source, java]
+----
+public class WebInitializer implements WebApplicationInitializer {
+	public void onStartup(ServletContext container) { 
+	// Create the 'root' Spring application context 
+	AnnotationConfigWebApplicationContext rootContext = 
+		new AnnotationConfigWebApplicationContext(); 
+	rootContext.register(AppConfig.class); 
+
+	// Manage the lifecycle of the root application context 
+	container.addListener(new ContextLoaderListener(rootContext)); 
+
+	// Create the dispatcher servlet's Spring application context 
+	AnnotationConfigWebApplicationContext dispatcherContext = 
+		new AnnotationConfigWebApplicationContext(); 
+	dispatcherContext.register(DispatcherConfig.class); 
+
+	// Register and map the dispatcher servlet 
+	ServletRegistration.Dynamic dispatcher = 
+		container.addServlet("dispatcher", 
+			new DispatcherServlet(dispatcherContext)); 
+	dispatcher.setLoadOnStartup(1); 
+	dispatcher.addMapping("/*"); 
+	}
+}
+----
+	
+== Konfiguracja DispatcherServlet poprzez adnotacje
+
+* Konfiguracja `DispatcherServlet`
+
+[source, java]
+----
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.example.web")
+public class DispatcherConfig { 
+	@Bean public InternalResourceViewResolver getInternalResourceViewResolver() { 
+		InternalResourceViewResolver resolver = 
+			new InternalResourceViewResolver(); 
+		resolver.setPrefix("/WEB-INF/views/"); 
+		resolver.setSuffix(".jsp"); 
+		return resolver; 
+	}
+}
+----
+	
+== Kontroler
+
+* Rola programisty Spring MVC ogranicza się do implementacji kontrolera oraz utworzenia widoku. 
+* Dobry kontroler nie powinien zawierać logiki biznesowej
+** po wstępnym przygotowaniu danych powinien wywołać komponenty z warstwy logiki biznesowej, 
+** po zakończeniu przetwarzanie – przekazać generacje strony do widoków.
+
+== Kontroler
+
+* Począwszy od Spring 2.5 możemy budować kontrolery wyłącznie z użyciem adnotacji
+
+[source, java]
+----
+@Controller
+public class HomeController {
+
+	//..
+
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String home(Locale locale, Model model) {
+		//..
+		model.addAttribute("serverTime", formattedDate );
+		return "home";
+	}
+
+}
+
+----
+	
+== Kontroler
+
+* Adnotacją @Controller jest uszczegółowieniem adnotacji @Component – dla Spring MVC
+* Za pomocą @RequestMapping odbywa się mapowanie kontrolera na metodą HTTP oraz URL 
+* Poprzez @RequestParam definiujemy parametry przekazane w żądaniu
+* Kontroler może zwrócić obiekty typu: 
+** String (nazwa widoku)
+** Obiekt typu Model (nazwa widoku jest wtedy zgodna z nazwą metody kontroler)
+** ModelAndView
+
+== Widok
+
+* W najprostszym przypadku – jest to plik JSP
+* Atrybuty modelu dodawane są do kontekstu strony (servlet.PageContext)
+* Obsługa znaczników JSP, JSTL i innych
+* Dodatkowe znaczniki Spring MVC przeznaczone do obsługi formularzy (o czym za chwilę)
+
+== Generowanie odpowiedzi innej niż HTML
+
+* Spring 3.1 wprowadził możliwość ‘negocjacji’ zawartości strony (ang. _content negotiations_)
+* Klient wskazuje typ zawartości poprzez URL (rozszerzenie) lub nagłówki (`Accept: application/json`) 
+* Kontener deleguje zapytania do odpowiednich widoków
+
+== Generowanie odpowiedzi innej niż HTML (2)
+
+[source, java]
+----
+@RequestMapping(value="/tasks", method=RequestMethod.GET, 
+	produces="application/json")
+@ResponseBody
+public List<Task> restTasks(Model model) {
+	List<Task> tasks = service.getTasks();
+	return tasks;
+}
+
+@RequestMapping(value="/tasks", method=RequestMethod.GET)
+public String tasks(Model model) {
+	List<Task> tasks = service.getTasks();
+	model.addAttribute("tasks", tasks);
+	model.addAttribute("task", new Task());
+	return "tasks";
+}
+----
+	
+== Generowanie odpowiedzi innej niż HTML (3)
+
+[source, xml]
+----
+<dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-core</artifactId>
+	<version>2.5.0</version>
+</dependency>
+<dependency>
+	<groupId>com.fasterxml.jackson.core</groupId>
+	<artifactId>jackson-databind</artifactId>
+	<version>2.5.0</version>
+</dependency>
+----
+	
+== Obsługa wyjątków
+
+* Kontener serwletów umożliwia obsługę sytuacji wyjątkowych
+* Odpowiedni wpis w web.xml pozwala wyświetlić własną stronę błędu
+* Atrybuty dotyczące błędu dołączone są do kontekstu żądania przez Servlet API
+
+[source, xml]
+----
+<error-page>
+	<error-code>404</error-code>
+	<location>/WEB-INF/views/errors/404.jsp</location>
+</error-page>
+
+<error-page>
+	<exception-type>java.lang.Exception</exception-type>
+	<location>/WEB-INF/views/errors/500.jsp</location>
+</error-page>
+
+----
+	
+== Obsługa wyjątków (2)
+
+* Strona błędu wyświetlana jest bezpośrednio – z pominięciem filtrów
+* Brak możliwości dodania dynamicznych danych – kontener wyświetla stronę taką jaka jest
+** Brak dostępu do warstwy logiki aplikacji
+** Pominięcie interceptorów zdefiniowanych w aplikacji (logowanie, auditing)
+
+== Obsługa wyjątków - globalnie
+
+* Spring umożliwia dodanie własnego mechanizmu obsługującego wyjątki
+* Ma on wyższy priorytet niż obsługa wyjątków zapisana w web.xml
+* Wyjątek jest dostępny w widoku poprzez atrybut `${exception}`
+
+[source, xml]
+----
+<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+	<property name="exceptionMappings">
+		<props>
+			 <prop key="java.lang.Exception">error_generic</prop>
+		</props>
+	</property>
+</bean>
+
+----
+	
+== Obsługa wyjątków - lokalnie
+
+* Od wersji Spring 3 możliwe jest zdefiniowanie własnej obsługi wyjątków na poziomie kontrolera
+* Obsługa dotyczy tylko i wyłącznie metod zdefiniowanych w kontrolerze
+
+[source, java]
+----
+@ExceptionHandler(BindException.class)
+public ModelAndView validationErrorHandler(Exception ex) {
+	ModelAndView mv = new ModelAndView();
+	mv.setViewName("error_validation");
+	mv.addObject("exception", ex);
+	return mv;
+}
+----
+	
+== Testowanie aplikacji Spring MVC
+
+* Spring dostarcza namiastek (ang. Mock Objects) ułatwiających tworzenie testów na pograniczu aplikacji i np. serwera aplikacji
+* MockHttpServletRequest i MockHttpServletResponse umożliwiają testowanie kontrolerów bez konieczności uruchamiania kontenera
+* ModelAndViewAssert upraszcza scenariusz testowe
+
+== Testowanie aplikacji Spring MVC (2)
+
+[source, java]
+----
+@Autowired
+ApplicationContext ctx;
+
+@Autowired
+TaskController controller;
+
+@Test
+public void servletTest() throws Exception {
+	MockHttpServletRequest req = 
+		new MockHttpServletRequest("GET", "/tasks");
+	MockHttpServletResponse resp = new MockHttpServletResponse();
+	HandlerAdapter handlerAdapter = ctx
+		.getBean(AnnotationMethodHandlerAdapter.class);
+	final ModelAndView model = handlerAdapter.handle(req, resp, controller);
+
+	assertViewName(model, "tasks");
+	assertAndReturnModelAttributeOfType(model, "task", Task.class);
+	assertAndReturnModelAttributeOfType(model, "tasks", List.class);
+
+	//.. create testTask object
+
+	assertModelAttributeValue(model, "tasks", Arrays.asList(testTask));
+	assertModelAttributeValue(model, "task", new Task());
+}
+
+----

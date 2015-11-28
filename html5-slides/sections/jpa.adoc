@@ -1,0 +1,1327 @@
+= Moduł 6b: JPA
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Mapowanie JPA. Minimalne mapowanie
+
+[source, java]
+----
+@Entity
+public class Ticket {
+	@Id private long id; 
+}
+----
+
+* `@javax.persistence.Entity` definiuje encję
+* `@javax.persistence.Id` definiuje prosty klucz główny
+* Klucz główny będzie uzupełniany ręcznie
+* `@Id` można umieścić nad polem lub nad geterem – determinuje to mapowanie kolejnych pól w jeden wybrany sposób
+
+== Modyfikacja mapowań
+
+[source, java]
+----
+@Entity
+public class Ticket implements Serializable {
+	@Id
+	private long id;
+	private double price;
+	private String movieTitle;
+}
+----
+
+* Domyślnie:
+** Klasa zostanie jest mapowana do tabeli ticket
+** Pole id do kolumny id
+** Pole price do kolumny price
+** Pole movieTitle do kolumny movietitle
+** Typ kolumn zależy od bazy danych i jest dobierany przez usługę EntityManager
+* Mapowania domyślne można zmodyfikować za pomocą adnotacji `@Column` i `@Table`
+
+== Modyfikacja mapowań (2)
+
+[source, java]
+----
+@Entity
+@Table(name="tickets")
+public class Ticket implements Serializable {
+
+	@Id
+	@Column(name="ticket_id")
+	private long id;
+
+	private double price;
+
+	@Column(name="movie_title")
+	private String movieTitle;
+
+}
+----
+	
+== Adnotacja @Table
+
+.Atrybuty
+* name
+** Wskazuje nazwę tabeli w bazie danych
+* schema
+** Wskazuje nazwę schematu
+* catalog
+** Wskazuje nazwę katalogu, w którym położona jest tabela
+* uniqueConstraints
+** Umożliwia nałożenie więzów unikalności na poszczególne kolumny
+
+== Adnotacja @Column
+
+.Atrybuty
+* name
+** Wskazuję nazwę kolumny w tabeli
+* insertable
+** Określa, czy do kolumny mogą być wstawiane wartości
+* nullable
+** Określa, czy kolumna możne zawierać wartości null
+* updatable
+** Określa, czy wartości w kolumnie mogą być aktualizowane
+* length
+** Dla kolumn typu znakowego określa długość łańcucha
+* precision
+** Dla kolumn typu zmiennoprzecinkowego określa precyzję przechowywanych wartości
+* scale
+** Wskazuje dokładność dla wartości zmiennoprzecinkowych
+* unique
+** Wskazuje, czy na kolumnę ma być nałożone ograniczenie unikalności wartości
+* table
+** Nazwa tabeli, z której pochodzi kolumna; używany, gdy klasa mapowana jest do wielu tabel
+* columnDefinition
+** Część składni SQL odpowiedzialna za definicję kolumny, np.: wskazanie typu
+
+== Klucz główny prosty
+
+* Użycie adnotacji `@Id` dla pola zakłada, że programista sam nada wartość klucza głównego
+* Można skorzystać z wartości generowanych automatycznie dodając adnotację @GeneratedValue i wybierając jedną ze strategii
+** AUTO (domyślnie)
+*** Usługa utrwalania decyduje o sposobie generowania kluczy na podstawie używanej bazy danych
+** IDENTITY
+*** Wymusza na bazie danych używanie specjalnego typu danych przeznaczonego tylko dla kluczy głównych
+** SEQUENCE
+*** Oznacza korzystanie z mechanizmu sekwencji, o ile baza danych udostępnia taki mechanizm
+** TABLE
+*** Usługa utrwalania korzystać będzie z dodatkowej tabeli, w celu wyznaczenia kolejnej wartości klucza
+
+== Klucz główny prosty - sekwencje
+
+* Korzystanie z sekwencji bazodanowej wymaga zdefiniowania generatora kluczy głównych związanego z tą sekwencją – adnotacja `@SequenceGenerator`
+* Zdefiniowany generator należy wskazać jako źródło kluczy głównych poprzez atrybut `@GeneratedValue.generator`
+* Atrybuty `@SequenceGenerator`
+** Name - Nazwa generatora
+** sequenceName - Nazwa sekwencji w bazie danych skojarzonej z generatorem
+
+[source, java]
+----
+@Entity
+@Table(name="tickets")
+public class Ticket implements Serializable { 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ticketSequence")
+	@SequenceGenerator(name="ticketSequence", sequenceName="tickets_seq")
+	private long id;
+}
+----
+
+== Klucz główny złożony
+
+* Specyfikacja JPA pozwala również definiować klucze złożone
+* Klucz złożony wymaga osobnej klasy oznaczonej jako `@Embeddable`
+* Kolumny odpowiadające kluczowi złożonemu tworzone są w tabeli właściwej dla encji, która korzysta z tego klucza
+
+[source, java]
+----
+@Embeddable
+public class UserPK {
+	private String name;
+	private String surname;
+}
+
+@Entity
+public class User {
+	@EmbeddedId
+	private UserPK id;
+}
+----
+
+== Adnotacja @Temporal i @Enumerated
+
+[source, java]
+----
+public enum TicketType {
+	CHILD, ADULT
+}
+
+@Entity
+@Table(name="tickets")
+public class Ticket implements Serializable {
+	@Id @GeneratedValue
+	private long id;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date timeExpired;
+
+	@Enumerated(EnumType.STRING)
+	private TicketType type;
+}
+----
+
+* @Temporal – wskazuje, za pomocą jakiego typu danych, będą zapamiętywane dane typów `java.util.Date` oraz `java.util.Calendar`
+* @Enumerated – mapuje pola typu wyliczeniowego:
+** STRING
+*** Wartości będą przechowywane w bazie w postaci łańcucha znaków
+** ORDINAL
+*** Wartości będą przechowywane w bazie w postaci liczby całkowitej, która odpowiada kolejności wyliczenia
+
+== Adnotacja @Transient
+
+* Usługa utrwalania zakłada, że wszystkie właściwości klasy oznaczonej jako @Entity są odwzorowywane w bazie danych
+* Aby wykluczyć właściwość z tej zasady, należy oznaczyć ją jako @Transient
+
+== Hibernate Session / EntityManager
+
+* Jest pośrednikiem w komunikacji z bazą danych - Data Access Object
+* Stanowi warstwę abstrakcji uniezależniającą aplikację od konkretnego źródła danych
+* Zmiana źródła danych może się odbywać w sposób transparentny (przydatne w testach)
+* Może stanowić podstawową implementację CRUD (Create, Retrieve, Update, Delete)
+* Odpowiada za cykl życia encji
+
+== Konfiguracja Hibernate Session - XML
+
+[source, xml]
+----
+<bean id="mySessionFactory"
+class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+	<property name="packagesToScan" value="com.example.dictionary.model" />
+	<property name="hibernateProperties">
+		<props>
+			<prop key="hibernate.dialect">
+			 	org.hibernate.dialect.MysqlDialect
+			</prop>
+		</props>
+	</property>
+</bean>
+
+----
+	
+== Konfiguracja Hibernate Session - Java
+
+[source, java]
+----
+@Bean
+public AnnotationSessionFactoryBean session(DataSource ds) {
+	AnnotationSessionFactoryBean session = new AnnotationSessionFactoryBean();
+	session.setDataSource(ds);
+	session.setPackagesToScan(new String[] {"com.example.dictionary.model"});
+
+	Properties props = new Properties();
+	props.put("hibernate.dialect", MySQLDialect.class.getName());
+	session.setHibernateProperties(props);
+
+	return session;
+}
+
+----
+	
+== Konfiguracja Entity Manager
+
+
+[source, java]
+----
+@Bean
+public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds) {
+	LocalContainerEntityManagerFactoryBean emf = new  
+	LocalContainerEntityManagerFactoryBean();
+	emf.setDataSource(ds);
+	return emf;
+}
+
+----
+	
+[source, xml]
+----
+<bean id="entityManagerFactory"
+class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+</bean>
+
+----
+	
+[source, xml]
+.persistence.xml
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
+http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+version="2.0">
+	<persistence-unit name="pu" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+	</persistence-unit>
+</persistence>
+----
+	
+== Konfiguracja Hibernate Session - atrybuty
+
+* hibernate.dialect - wskazuje dialekt SQL, w którym będą generowane zapytania: Oracle, MySQL, MsSQL 
+* hibernate.show_sql - pokazuje kwerendy SQL generowane przez Hibernate’a
+* hibernate.format_sql - czytelnie formatuje wygenerowane kwerendy
+* hibernate.hbm2ddl.auto – sposób traktowania schematu bazy danych. 
+** validate 
+** update 
+** create
+** create-drop
+
+== Wykorzystanie Session lub EntityManager
+
+[source, java]
+----
+public class HibernateRepository {
+
+	@Autowired
+	SessionFactory mySessionFactory;
+
+	public DictionaryWord getSavedWords() {
+		return mySessionFactory.openSession().get(DictionaryWord.class, 1l);
+	}
+
+}
+----
+	
+[source, java]
+----
+public class JpaRepository {
+
+	@PersistenceContext
+	EntityManager em;
+
+	public DictionaryWord getSavedWords() {
+		return em.find(DictionaryWord.class, 1l)
+	}
+
+}
+----
+	
+== Cykl życia encji
+
+* persist() - powoduje dodanie encji do kontekstu utrwalania. Encje tworzymy za pomocą new – tak jak wszystkie inne obiekty w Javie
+* save() / saveOrUpdate() - dla Hibernate Session
+
+
+image::images/100000000000028C00000102B8B79203.png[]
+    
+== Cykl życia encji (2)
+
+* get(), load() - pobiera encje z kontekstu na podstawie identyfikatora (dla Hibernate Session)
+* find(), getReference() – w przypadku EntityManager
+
+image::images/100000000000028C00000102F4E99199.png[]
+    
+== Cykl życia encji (3)
+
+* delete() - usuwa encję z kontekstu (Hibernate Session)
+* remove() – metoda EntityManagera
+
+image::images/100000000000028C00000102C1F21813.png[]
+    
+== Cykl życia encji (4)
+
+* clear()– odłącza, od kontekstu utrwalania wszystkie zarządzane encje
+* Object merge(entity) - przyłącza odłączoną encje do kontekst
+
+image::images/100000000000028C0000010214D1B7B8.png[]
+    
+== Cykl życia encji (5) – obiekty detached
+
+* Były zarządzanie przez sesję lecz zostały odłączone (lub sesja została zamknięta)
+* Obiekt typu detached może zostać ponownie dołączony do kontekstu
+* Wszystkie modyfikacje mogą zostać z powodzeniem zapisane do bazy danych w późniejszym etapie
+* Praca z obiektem nie wymaga otwartego połączenie do bazy danych
+
+== JPQL
+
+* Język zapytań JPA
+* Analogiczny do języka SQL jednak nie zależny od konkretnego typu bazy danych
+* Umożliwia elastyczniejsze pobieranie danych niż metoda entityManager.find()
+** filtrowanie
+** sortowanie
+** grupowanie
+** agregacja 
+
+== JPQL (2)
+
+[source, java]
+----
+Query query = entityManager
+	.createQuery("wyrażenie JPQL");
+
+Object single = query.getSingleResult();
+List list = query.getResultList();
+----
+	
+== JPQL - operatory
+
+* operatory logiczne (równość, większy, mniejszy, różny od)
+* AND, OR, NOT
+* operatory matematyczne (plus, minus, iloczyn, iloraz, inkrementacja i dekrementacji)
+* . (kropka) - operator nawigacji; zależności od zagłębionych encji
+* LIKE; dopasowanie wyrażenia znakowego do wzorce
+* BETWEEN
+* IN; sprawdzenie czy wartość znajduje się w tablicy
+* IS NULL, IS EMPTY
+* MEMBER OF; sprawdzenie czy parametr jest elementem kolekcji
+
+== JPQL – operatory (2)
+
+
+[source, text]
+----
+SELECT p FROM Person p
+from Person where firstName = 'Jakub' and lastName is null 
+from Person where address.city = 'Gdansk'
+from Person where firstName LIKE 'Ja%' from Person where firstName IN ('Jakub', 'Jan')
+from Person where 'Jakub' MEMBEROF names`
+----
+	
+== JPQL - funkcje
+
+* lower - zamiana liter na małe
+* upper - zamiana liter na wielkie
+* trim - usunięcie spacji
+* concat - połączenie dwóch łańcuchów znaków
+* length - zwraca długość łańcucha znaków
+* locate - zwraca pozycję jednego łańcucha w drugim
+* substring - zwraca podłańcuch o określonej długości
+
+== JPQL – funkcje (2)
+
+
+[source, text]
+----
+from Person where UPPER(firstName) = 'JAKUB'
+from Person where LENGTH(address.city) = 5 
+from Person where CONCAT(firstName, 'NAME') = 'JakubNAME'
+----
+	
+== JPQL – grupowanie
+
+* count - zlicza ilość elementy w zbiorze
+* max, min - maksymalna/minimalna wartość
+* sum - suma wartości wszystkich pól numerycznych wskazanych przez wyrażenie
+* avg - oblicza średnią z wartości pola numerycznego
+
+== JPQL – grupowanie (2)
+
+
+[source, text]
+----
+SELECT COUNT(p) FROM Person p
+SELECT MAX(p.age) FROM Person p
+SELECT AVG(p.age) FROM Person p
+----
+	
+== JPQL – parametry
+
+* parametry nazwane
+
+[source, java]
+----
+Person person = entityManager
+	.createQuery("from Person where firstName = ?1", Person.class)
+	.setParameter(1, "Jakub")
+	.getSingleResult();
+----
+	
+[source, java]
+----
+Person person = entityManager
+	.createQuery("from Person where firstName = :name", Person.class)
+	.setParameter("name", "Jakub")
+	.getSingleResult();
+----
+	
+== JPQL – DTO
+
+* Data Transfer Object – struktura utworzona do przeniesienia danych
+* JPQL umożliwia pobranie tylko niektórych elementów z encji
+* JPA zwraca wtedy tablice typu Object[]
+
+[source, text]
+----
+SELECT p.firstname, p.lastname FROM Person p
+----
+	
+== JPQL – DTO (2)
+
+* Wykorzystanie DTO zwiększa czytelność kodu
+
+[source, java]
+----
+public class NameDTO {
+	private String firstName;
+	private String lastName;
+
+	public NameDTO(String firstName, String lastName) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+	} 
+	
+	//..
+}
+----
+	
+[source, java]
+----
+NameDTO name = (NameDTO) entityManager.createQuery("select new " + 
+	"com.example.ejb3.NameDTO(p.firstName, p.lastName) from Person p")
+.getSingleResult();
+
+System.out.println(name.getFirstName() + ", " + name.getLastName());
+----
+	
+== Zapytania nazwane
+
+* Nazwy zapytań są globalne w obrębie jednostki utrwalania
+
+[source, java]
+----
+@Entity
+@NamedQueries({
+	@NamedQuery(name="User.findAll", query="from User"),
+	@NamedQuery(name="User.findById", query="from User u where u.id = :userId")
+})
+public class User {
+	//...
+}
+
+Query query = em.createNamedQuery("User.findById");
+query.setParameter("userId", 1001L);
+
+User user = (User) query.getSingleResult();
+----
+
+== Założenia transakcyjności
+
+* atomowość – niepodzielność, udaje się w całości albo wcale
+* spójność – nie narusza integralności danych
+* izolacja – równolegle transakcje nie widzą zmian przez siebie wprowadzanych
+* trwałość – w przypadku awarii, system jest w stanie udostępnić spójne i nienaruszone dane, niezależnie od momentu w którym transakcja została przerwana. 
+
+== Transakcja na poziomie aplikacji
+
+* Służą do łączenia kilku operacji i uzależniają końcowy wynik przetwarzania od powodzenia wszystkich operacji objętych transakcją
+* Nie muszą dotyczyć tylko operacji bazodanowych
+* Gwarantują spójność wykonywanych operacji
+
+== Automatyczna konfiguracja transakcji
+
+* Spring umożliwia automatyczną konfigurację transakcji
+* Łączy transakcję z odpowiednim źródłem danych
+* Umożliwia zarządzanie transakcjami bezpośrednio w kodzie (poprzez adnotację `@Transactional`)
+
+[source, xml]
+----
+<tx:annotation-driven transaction-manager="txManager" />
+ 
+<bean id="txManager"
+class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<property name="dataSource" ref="dataSource" />
+</bean>
+----
+	
+== Automatyczna konfiguracja transakcji (2)
+
+[source, java]
+----
+@Configuration
+@EnableTransactionManagement
+public static class AppConfiguration {
+
+	@Bean
+	public AnnotationSessionFactoryBean session(DataSource ds) {
+		//..
+	}
+
+	@Bean
+	public HibernateTransactionManager hibernateTxManager(SessionFactory factory) {
+		HibernateTransactionManager tx = new HibernateTransactionManager();
+		tx.setSessionFactory(factory);
+		return tx;
+	}
+}
+----
+	
+== Zadania Transaction Managera
+
+* Sprawdza czy istnieje aktywna transakcja
+* Zarządza zasięgiem transakcji (propagation)
+* Zawiesza i wznawia transakcje w zależności od potrzeb
+* Sprawdza flagę rollback-only w przypadku zakończenia transakcji
+* Odpowiada za wszelkie modyfikację w przypadku nawrotu transakcji
+
+== Adnotacja @Transactional
+
+* Zastosowana na poziomie metody obejmuje ją transakcją. 
+* Umożliwia szczegółową konfigurację poprzez szereg atrybutów:
+** Value: manager transakcji który ma zostać użyty
+** Propagation: typ transakcji
+** Isolation: poziom izolacji transakcji
+** ReadOnly: transakcja tylko odczytująca czy obejmuje zarówno operacje odczytu jak i zapisu
+** Timeout: maksymalny czas trwania transakcji (w sekundach)
+** Rollback / NoRollback: wyjątki powodujące wycofanie (lub nie) transakcji
+
+== Adnotacja @Transactional 
+
+[source, java]
+----
+@Transactional(propagation=Propagation.REQUIRED, 
+isolation=Isolation.DEFAULT, 
+timeout=-1, readOnly=false)
+----
+	
+== Typy transakcji
+
+* REQUIRED - operacja zawsze będzie objęta transakcją
+** nowo utworzona transakcja 
+** Wykorzystanie już istniejąca transakcji
+* NOT_SUPPORTED - klient nie obsługuje transakcji; istniejąca transakcja jest zawieszana
+* SUPPORTS - poprawne zachowanie zarówno z jak i bez transakcji.
+** równoznaczne atrybutowi REQUIRED – w przypadku istnienia transakcji
+** równoznaczne NOT_SUPPORTED – w przypadku braku transakcji
+* REQUIRES_NEW –dla każdego wywołania metody tworzona jest nowa transakcja. 
+* MANDATORY – w trakcie wywołania metody transakcja musi być aktywna.
+* NEVER - metoda nie może być wywołana w obrębie transakcji
+
+== Transakcje typu NESTED
+
+* Typy wprowadzony w Spring Framework – typ nie mający odpowiednika w EJB
+* utworzenie zagnieżdżonej transakcji, z wieloma punktami zapisu (ang. _save points_)
+* Wymaga źródła danych zgodnego z JDBC 3.0
+* Pozwala na częściowe nawrócenie transakcji (ang. _rollback_) do najbliższego wewnętrznego punktu zapisu
+* Mimo nawrotu transakcja wciąż jest aktywna i działająca. 
+
+== Criteria API
+
+* Alternatywa wobec JPQL 
+** Początkowo dostępna tylko w Hibernate
+** Od JEE6 jest elementem standardu JPA 2
+* Criteria to obiektowa reprezentacja zapytania dotyczącego konkretnej encji
+* Umożliwia stopniowe budowanie dynamicznych zapytań
+** Z zachowaniem czytelności
+** Z wygodnym Fluent API
+
+== Criteria API
+
+
+[source, java]
+----
+List cats = sess.createCriteria(Cat.class)
+	.add( Restrictions.like("name", "Fritz%") )
+	.add( Restrictions.between(
+	"weight", minWeight, maxWeight) )
+	.list();
+----
+	
+== Criteria API - operatory
+
+* operatory logiczne (równość, większy, mniejszy, różny od)
+* AND, OR, NOT
+* . (kropka) - operator nawigacji; zależności od zagłębionych encji
+
+[source, java]
+----
+Restrictions.gt("age", 19)
+Restrictions.eq("name", "Fritz")
+----
+	
+[source, java]
+----
+Criteria.add(Restrictions.or (
+Restrictions.like("name", "Fritz%"), 
+Restrictions.isNull("weight") ) )
+----
+	
+[source, java]
+----
+Restrictions.eq("name.firstName", "Fritz")
+----
+	
+== Criteria API - grupowanie
+
+* count - zlicza ilość elementy w zbiorze
+* max, min - maksymalna/minimalna wartość
+* sum - suma wartości wszystkich pól numerycznych wskazanych przez wyrażenie
+* avg - oblicza średnią z wartości pola numerycznego
+
+[source, java]
+----
+List results = session.createCriteria(Cat.class)
+	.setProjection( Projections.projectionList()
+	.add( Projections.rowCount() )
+	.add( Projections.avg("weight") )
+	.add( Projections.max("weight") )
+	.add( Projections.groupProperty("color") )
+)
+.list();
+----
+	
+== Criteria API – example query
+
+* Umożliwia zapytania poprzez przykłady
+* Klasa Example umożliwia uogólnianie przykładowego obiektu
+
+[source, java]
+----
+session.createCriteria(Cat.class)
+	.add( Example.create(cat) )
+	.list();
+----
+	
+[source, java]
+----
+Example.create(cat)
+	.excludeNone()
+	.excludeProperty("weight”)
+	.ignoreCase()
+	.enableLike();
+----
+	
+== Criteria API – problemy
+
+* Wydajność zapytania
+** JPQL (HQL) daje pewne możliwości kontroli zapytania (optymalizacja)
+** Criteria API to pełna wiara w potęgę Hibernate
+* Wydajność aplikacji 
+** Zapytania nazwane można z łatwością cache’ować
+* Utrzymanie
+** Zapytania zostają pownownie rozrzucone po kodzie aplikacji
+** Zapytania nazwane zawsze zgromadzone w jednym miejscu
+
+== Wiele obiektów w jednej tabeli (1)
+
+[source, java]
+----
+@Embeddable
+public class Address {
+	private String city;
+	private String street;
+	private String postalCode;
+	private String state;
+}
+----
+
+[source,java]
+----
+@Entity
+public class User {
+	@Id
+	private long id;
+	
+	@Embedded
+	private Address address;
+}
+----
+
+* Jeśli tabela przechowuje dane, które należy rozdzielić pomiędzy wiele obiektów, można do tego celu użyć adnotacji `@Embedded` oraz `@Embeddable`
+* Pola klasy osadzonej zostaną zmapowane do tabeli związanej z klasą-właścicielem
+
+== Wiele obiektów w jednej tabeli (2)
+
+* Nazwy kolumn odpowiadających właściwościom obiektu osadzanego można zdefiniować za pomocą adnotacji @Column
+* Nazwy te można przedefiniować przy pomocy adnotacji `@AttributeOvveride` w encji-właścicielu
+
+[source, java]
+----
+@Embeddable 
+public class Address {
+	private String street;
+
+	@Column(name="postal_code") 
+	private String postalCode;
+}
+
+@Entity 
+public class User {
+
+	@Embedded 
+	@AttributeOverrides ({
+		@AttributeOverride(name="postalCode",column=@Column(name="user_postal")),
+		@AttributeOverride(name="street", column=@Column(name="basic_street"))
+		})
+	private Address address;
+}
+----
+
+== Encja z wielu tabel
+
+* Jeśli dane przechowywane w encji mają pochodzić z wielu tabel należy posłużyć się adnotacją `@SecondaryTable` do zadeklarowania dodatkowej tabeli
+* Właściwości pochodzące z inne tabeli wskazywane są atrybutem `@Column.table`
+* Jeśli zachodzi konieczność zadeklarowania więcej niż jednej dodatkowej tabeli, należy adnotację `@SecondaryTable` umieścić w `@SecondaryTables`
+
+[source, java]
+----
+@Entity
+@SecondaryTable(name="addresses", 
+	pkJoinColumns=@PrimaryKeyJoinColumn(name="id")
+	)
+public class User {
+	@Column(table="addresses", name="street") 
+	private String street;
+
+	@Column(table="addresses", name="city") 
+	private String city;
+}
+----
+
+== Encja z wielu tabel(2)
+
+.Atrybuty @SecondaryTable
+* name
+** Nazwa dodatkowej tabeli
+* pkJoinColumns
+** Zestaw adnotacji @PrimaryKeyJoinColumns wskazujących kolumny z dodatkowej tabeli, w względem których ma nastąpić złączenie z tabelą bazową; zazwyczaj jest to klucz główny
+
+.Atrybuty @PrimaryKeyJoinColumns
+* name
+** Nazwa kolumny w tabeli dodatkowej, względem której nastąpi złączenie
+* referencedColumnName
+** Nazwa kolumny w tabeli głównej, względem której nastąpi złączenie; domyślnie jest to klucz główny
+
+== Typy relacji
+
+* Jeden – do – jednego `@OneToOne`
+* Wiele – do – jednego @ManyToOne`
+* Jeden – do – wielu `@OneToMany`
+* Wiele – do – wielu `@ManyToMany`
+
+== Jeden do jednego
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+  @OneToOne
+  private Address address;
+  //..
+}
+----
+
+[source, java]
+----
+@Entity
+public class Address {
+  @Id
+  private long addressId;
+  private String addressLine1;
+  private String zipCode;
+  private String city;
+  private String country;
+  //..
+}
+----
+
+image::images/10000000000001C4000000871F6C0BAE.png[]
+
+== Jeden do jednego (2)
+
+[source, java]
+----
+@Entity
+public class Person {
+  
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+  
+  @OneToOne
+  @JoinColumn (name="ADDRESS_ID")	
+  private Address address;	
+  //..
+}
+
+@Entity
+public class Address {
+  @Id
+  private long addressId;
+  private String addressLine1;
+  private String zipCode;
+  private String city;
+  private String country;
+  //..
+}
+----
+
+image::images/100000000000018700000087104D351F.png[]
+    
+== Jeden do jednego - dwukierunkowa
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+  @OneToOne
+  private Address address;	
+  //..
+}
+
+@Entity
+public class Address {
+  @Id
+  private long addressId;
+  private String addressLine1;
+  private String zipCode;
+  private String city;
+  private String country;
+  @OneToOne
+  private Person person;
+  //..
+}
+----
+
+image::images/10000000000001F400000097BC1B5966.png[]
+
+== Jeden do jednego – dwukierunkowa (2)
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+  @OneToOne
+  private Address address;
+  //..
+}
+
+@Entity
+public class Address {
+  @Id
+  private long addressId;
+  private String addressLine1;
+  private String zipCode;
+  private String city;
+  private String country;
+  @OneToOne(mappedBy = "address")
+  private Person person;
+  //..
+}
+----
+
+image::images/10000000000001C300000088783E7571.png[]
+    
+== Wiele do jednego
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+  //..
+}
+
+@Entity
+public class Phone{
+  @Id
+  private long phoneId;
+  private String number;
+  private String extension;
+  @ManyToOne
+  private Person person;
+  //..
+}
+----
+
+image::images/100000000000018600000077A3A513AE.png[]
+    
+== Jeden do wielu
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+  
+  @OneToMany
+  private List<Phone> phones;
+  //..
+}
+
+@Entity
+public class Phone{
+  @Id
+  private long phoneId;
+  private String number;
+  private String extension;
+  //..
+}
+----
+
+image::images/100000000000023E00000077D8DE759E.png[]
+    
+== Jeden do wielu (2)
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+    @OneToMany
+    @JoinTable(name = "PERSON_CONTACT_DATA",
+  		joinColumns = @JoinColumn(name="PERSON_ID"),
+  		inverseJoinColumns = @JoinColumn(name="PHONE_ID")
+  		)
+  private List<Phone> phones;
+  //..
+}
+
+@Entity
+public class Phone {
+  @Id
+  private long phoneId;
+  private String number;
+  private String extension;
+  //..
+}
+----
+
+
+image::images/100000000000024500000068C0AD46C8.png[]
+    
+== Jeden do wielu - dwukierunkowa
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+  private String firstName;
+  private String lastName;
+  private String nickName;
+  @OneToMany(mappedBy="person")
+  private List<Phone> phones;
+  //..
+}
+
+@Entity
+public class Phone {
+  @Id
+  private long phoneId;
+  private String number;
+  private String extension;
+  @ManyToOne
+  @JoinColumn(name="PERSON_ID")
+  private Person person;
+  //..
+}
+----
+
+image::images/100000000000015700000077957D78AD.png[]
+    
+== Wiele do wielu
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+
+  @ManyToMany
+  private Collection<Address> addresses;
+  //..
+}
+
+@Entity
+public class Address {
+  @Id
+  private long addressId;
+  //..
+}
+----
+
+image::images/100000000000027500000067E0C13DED.png[]
+    
+== Wiele do wielu – dwukierunkowa
+
+[source, java]
+----
+@Entity
+public class Person {
+  @Id
+  private long personId;
+
+  @ManyToMany
+  private Collection<Address> addresses;
+  //..
+}
+
+@Entity
+public class Address {
+  @Id
+  private long addressId;
+
+  @ManyToMany(mappedBy="addresses“)
+  private Collection<Person> people;
+  //..
+}
+----
+
+image::images/100000000000025C0000006745FC07EA.png[]
+    
+== Ładowanie wczesne i opóźnione
+
+* Dla encji będących w relacji oznacza, że załadowanie z bazy danych encji powiązanych odbędzie się dopiero w momencie pierwszego dostępu do nich
+* Rodzaj ładowania określa atrybut _fetch_ adnotacji `@OneToOne`, `@OneToMany`, `@ManyToOne`, `@ManyToMany`, a także `@Lob` i `@Basic`
+* Atrybut może przyjmować dwie wartości:
+** _LAZY_:: Ładowanie opóźnione
+** _EAGER_:: Wszystkie powiązania ładowane są natychmiast
+
+== Ładowanie wczesne i opóźnione (2)
+
+* Ładowanie opóźnione możliwe jest tylko wtedy, gdy encja znajduje się w kontekście utrwalania
+* Próba uzyskania dostępu do zależności ładowanej z opóźnienie zakończy się zgłoszeniem wyjątku LazyInitException
+
+== Kaskadowość
+
+* Określa sposób, w jaki traktowane będą powiązane encje w momencie wywołania jednej z metod `persist()`, `merge()`, `remove()`, `refresh()` usługi utrwalania
+* Sposób ten określa się za pomocą atrybutu cascade adnotacji `@OneToOne`, `@OneToMany`, `@ManyToOne`, `@ManyToMany`
+* Konkretny sposób wskazywany jest przez wartości typu `CascadeType`
+
+[source, java]
+----
+@Entity
+public class User {
+	@ManyToMany(cascade={CascadeType.MERGE, CascadeType.PERSIST})
+	private Collection<Ticket> tickets;
+}
+----
+
+== Kaskadowość (2)
+
+* `CascadeType.REMOVE`
+** Jeśli usunięty zostanie właściciel relacji, to usunięte zostaną również encje zależne
+* `CascadeType.PERSIST`
+** Jeśli utrwalony zostanie właściciel relacji, to utrwalone zostaną również encje zależne
+* `CascadeType.MERGE`
+** Jeśli właściciel relacji zostanie przyłączony do kontekstu utrwalania, to przyłączone zostaną również encje zależne; jeśli któraś z encji zależny nie była jeszcze utrwalona, to zostanie utrwalona
+* `CascadeType.REFRESH`
+** Jeśli właścicielowi relacji zostanie stan z bazy, to stanie się to również z encjami zależnymi
+* `CascadeType.ALL`
+** Wszystkie powyższe jednocześnie
+
+== Trochę wątpliwości
+
+* Łatwo stracić panowanie nad kaskadowością
+* Ładownie opóźnione powoduje N+1 select problem
+
+== Mapowanie dziedziczenia
+
+* Są trzy sposoby odwzorowania dziedziczenia
+** Single Table per Class Hierarchy
+** Table per Class
+** Joined Subclass
+* Wybór strategii dotyczy całego drzewa hierarchii
+
+== Mapowanie dziedziczenia – single table
+
+* Tworzona jest jedna tabela dla wszystkich klas
+* Tabela zawiera kolumny odpowiadające wszystkim atrybutom wszystkich podklas
+* Dodatkowa kolumna discriminator określa do której podklasy należy obiekt
+** Discriminator nie jest widoczny dla użytkownika, nie jest polem obiektu
+
+[source, java]
+----
+@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="taskType", 
+discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorValue("simple")
+public class Task {
+	//..
+}
+----
+	
+== Mapowanie dziedziczenia – single table (2)
+
+* Podklasy są podobne jeżeli chodzi o atrybuty i różnice występują w zachowaniu (metody)
+* Podejście (mimo potencjalnego braku elegancji) jest najczęściej używane
+* Jeżeli nie wiadomo na którą strategie się decydować, niewiele wiemy o złożoności modelu – single table jest najlepsze
+* Wszystkie kolumny muszą być nullable
+
+== Mapowanie dziedziczenia – table per class
+
+* Każdej klasie odpowiada pojedyncza tabela
+* Tabela zawiera komplet atrybutów danego obiektu
+* Każda podklasa posiada własny identyfikator
+
+[source, java]
+----
+@Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+public class Task {
+	//..
+}
+----
+	
+== Mapowanie dziedziczenia – table per class (2)
+
+* Kolumna klasy nadrzędnej narzuca nazwy kolumn klasie podrzędnej
+** zmiana typu jednego pola w nadklasie powoduje konieczność ręcznego zrobienia tej zmiany we wszystkich podklasach
+* Identyfikator nie może być automatycznie generowany 
+* Na poziomie bazy danych nie widać jakiegokolwiek związku pomiędzy encjami
+** W przypadku agregacji konieczność wygenerowania n zapytań dla n klas
+
+== Mapowanie dziedziczenia – joined subclass
+
+* Tabela podklasy zawiera tylko różnice względem nadklasy
+* Normalizacja tabel, przejrzystość modelu oraz zachowanie modelu obiektowego
+* Klucz główny współdzielony jest pomiędzy nadklasą i podklasą
+
+[source, java]
+----
+@Entity
+@Inheritance(strategy=InheritanceType.JOINED)
+public class Task {
+	//..
+}
+----
+	
+== Mapowanie dziedziczenia – joined subclass (2)
+
+* Wierne odwzorowanie modelu obiektowego w bazie danych
+* Przejrzyste modelowanie pomiędzy poszczególnymi podklasami – każda tabela ma swój klucz
+* Pobranie wszystkich wartości z całej hierarchii wymaga skomplikowanego zapytania (outer-join) po wielu tabelach
+** Niedopuszczalnie niska wydajność
+
+== @MappedSuperclass
+
+* Definicja encji następuję w podklasach
+* Klasa bazowa zawiera informacje o relacjach, sama w sobie nie jest jednak encją
+
+[source, java]
+----
+@MappedSuperclass
+public class BaseEntity {
+	@Basic
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastUpdate;
+	private String lastUpdater;
+	
+	//...
+}
+
+@Entity 
+public class Order extends BaseEntity {
+	@Id 
+	private Integer id;
+	//...
+}
+
+----
+	
+== Zdarzenia zwrotne
+
+* Encja może przechwycić operacje wykonywanie na niej przez usługę utrwalania jeśli udostępni metody oznaczone odpowiednio:
+** `@PrePersist`
+** `@PostPersist`
+** `@PostLoad`
+** `@PreUpdate`
+** `@PostUpdate`
+** `@PreRemove`
+** `@PostRemove`
+* Metoda powinna być bezargumentowa, typu void i nie deklarująca wyrzucania wyjątków checked
+
+== Klasy nasłuchujące
+
+[source, java]
+----
+public class UserListener {
+	@PostPersist
+	public void afterPersist(User entity) {
+		//...
+	}
+}
+
+@Entity
+@EntityListeners(UserListener.class)
+public class User {
+	//...
+}
+----
+
+* Metodą przechwytywania zdarzeń utrwalania, która „nie zaśmieca” kodu encji, jest zdefiniowanie klasy nasłuchującej
+
+== Blokowanie obiektów
+
+* pesymistyczne (ang. _pessimistic locking_) 
+** blokowanie na wyłączność
+** zakłada brak interferencji pomiędzy transakcjami.
+* optymistyczne (ang. _optimistic locking_) 
+** dopuszczające możliwość zmiany z zewnątrz
+** zakłada się małe prawdopodobieństwo równoległego zapisu
+** przewiduje mechanizmy wyjścia z niekorzystnej sytuacji
+
+== Blokowanie obiektów (2)
+
+* Bez dodatkowej konfiguracji JPA nie przewiduje jakiegokolwiek blokowania - obiekty mogą się wzajemnie nadpisywać
+* Możliwe jest optymistyczne blokowanie – przed zapisem JPA sprawdza czy wiersz nie został już zmieniony
+* Adnotacja @Version na polu numerycznym lub Timestamp
+* javax.persistence.OptimisticLockException przerywa transakcję w razie jakichkolwiek problemów
+
+== Blokowanie obiektów (3)
+
+
+[source, java]
+----
+@Entity
+public class Phone {
+ 
+	@Id
+	private long phoneId;
+	private String number;
+	private String extension;
+
+	@Version
+	private Long version;
+	 
+	//... getters and setters
+}
+----
+	

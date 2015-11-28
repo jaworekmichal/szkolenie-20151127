@@ -1,0 +1,25 @@
+/*
+.deck-container {
+	font-size: 1.5em !important;
+}
+*/
+pre.nowrap {
+	white-space: pre;
+	overflow: auto;
+}
+
+p, blockquote, iframe, img, ul, ol, pre, video {
+  margin-bottom: 0em !important; 
+}
+
+table pre.CodeRay {
+	border: 0px !important;
+}
+
+pre.CodeRay {
+	padding: 0.3em;
+}
+
+.listingblock {	
+	margin-top: 1em;
+}

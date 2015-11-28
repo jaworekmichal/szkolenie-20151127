@@ -1,0 +1,591 @@
+= Moduł 3: Wstrzykiwanie zależności
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Wstrzykiwanie zależności
+
+* Łączenie komponentów
+* Kwalifikatory
+* Wstrzykiwanie zasobów
+* Wstrzykiwanie wielu instancji komponentu
+* Stan początkowy komponentu
+    
+== Adnotacja @Autowire
+
+* Spring posiada mechanizmy automatycznego odnajdywania zależności
+* Zmniejsza potrzebę jawnego definiowania konfiguracji
+* Adnotacją można oznaczyć pole, modyfikator lub konstruktor
+* Framework samodzielnie dopasuje i wybierze komponenty do wstrzyknięcia
+
+== Adnotacja @Autowire
+
+* Zadziała poprawnie jeżeli framework dopasuje jeden (i tylko jeden) element do wstrzyknięcia
+* Poprzez atrybut _required="false"_ można ustawić zależność jako opcjonalną
+* Wstrzykiwanie domyślnie odbywa się po typie komponentu, ale jest to konfigurowalne
+* Jeżeli w kontekście istnieje więcej niż jeden element możliwy do wstrzyknięcia, konieczne jest bardziej zaawansowane rozwiązywanie zależności
+
+== Typy wstrzykiwania @Autowire
+
+
+[source, xml]
+----
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd"
+  default-autowire="byName" // <1>
+/>
+----
+  
+== Typy wstrzykiwania @Autowire (2)
+
+[cols="1,4"]
+|===
+a| *no*
+a| Brak mechanizmu autowiring. +
+Zależności muszą być specyfikowane jawnie
+
+a| *byName*
+a| Spring wyszukuje zależności na bazie porównywania nazw komponentów i nazw właściwości. np. _setGeneraror()_ → _<bean id="generator" />_
+
+a| *byType*
+| Wyszukiwanie zależności następuje po typie, pod warunkiem, że istnieje zdefiniowany tylko jeden komponent danego typu. W przeciwnym razie zostanie zgłoszony wyjątek.
+
+a| *constructor*
+| Podobnie jak byType, przy czym ogranicza się tylko i wyłącznie do konstruktorów
+
+a| *autodetect*
+| Jeśli dla danej klasy istnieje konstruktor, używana jest strategia constructor, jeśli nie istnieje byType
+|===
+    
+== Konfiguracja XML
+
+* Komponenty definiujemy za pomocą tagu `<bean />`. Nazwa komponentu (id) musi być unikalna.
+* Zależności rozwiązywane są poprzez konstruktor bądź modyfikatory (settery)
+
+[source, xml]
+----
+<bean id="taskService" class="com.example.spring.todo.TasksService">
+  <property name="validator" ref="validator" />
+  <property name="sqlMapClient" ref="sqlMapClient" />
+  <property name="messages" ref="messageSource" />
+</bean>
+
+<bean id="taskService" class="com.example.spring.todo.TasksService"> 
+  <constructor-arg ref="validator" />
+  <constructor-arg ref="messageSource" />
+  <constructor-arg ref="sqlMapClient" />
+</bean>
+----
+  
+== Wstrzykiwanie więcej niż jednej instancji
+
+* Spring umożliwia automatyczne utworzenie list (tablicy) komponentów
+* Wstrzyknięte zostaną wszystkie komponentu pasujące do danego typu
+
+[source, java]
+----
+@Autowired
+List<TaskPrinter> printers;
+
+public void print() {
+  for (TaskPrinter p : printers) {
+    p.printCurrentTasks();
+  }
+}
+----
+  
+== Wstrzykiwanie więcej niż jednej instancji
+
+* Adnotacja @Autowired działa dla:
+** artybutów klasy (pól)
+** setterów
+** metod
+** konstruktorów – tylko jeden z konstruktorów może być oznaczony jako required
+** kolekcji – umieszczane są wszystkie komponenty o danym typie
+** map – kluczem jest nazwa komponentu a wartością referencja do niego
+** Interfejsów kontenera – np. `ApplicationContext`
+
+== Adnotacja @Required
+
+* Oznacza daną zależność jako wymaganą (dotyczy setterów)
+* Sprawdzenie następuje w momencie uruchomienia kontenera
+* Użycie adnotacji `@Required` jest torżsame z wykorzystaniem atrybuty required dla adnotacji `@Autowired`
+
+== Adnotacja @Resource
+
+* Wstrzykiwanie zasobów (fabryki BeanFactory, ApplicationContext itp.)
+* Może zostać wykorzystana do wstrzykiwania komponentów
+* Wstrzykiwanie przy użyciu @Resource odbywa się po nazwie
+
+[source, java]
+----
+@Resource(name = "prettyStringTaskPrinter")
+TaskPrinter p;
+
+public void print() {
+  p.printCurrentTasks();
+}
+----
+  
+== Stan początkowy komponentu 
+
+* Do inicjacji komponentu używamy adnotacji `@Value`
+* Wartość atrybutu można dowolnie zmieniać z poziomu konfiguracji
+
+[source, java]
+----
+@Component
+public class PrettyStringTaskPrinter implements TaskPrinter {
+ 
+  @Value("MM/dd/yyyy") 
+  String pattern;
+
+  @Autowired
+  TasksService tasksService;
+   
+  //..
+
+}
+----
+  
+== Zewnętrzne pliki properties
+
+* Spring umożliwia wczytywanie danych z zewnętrznych plików properties
+* Dane ładowane są w trakcie inicjalizacji aplikacji
+
+[source, xml]
+----
+<context:property-placeholder 
+  location="classpath:META-INF/spring/dict.properties" />
+----
+  
+[source, java]
+----
+@Configuration
+@PropertySource("classpath:META-INF/spring/dict.properties")
+public class JavaConfiguration {
+  @Bean
+  public PropertySourcesPlaceholderConfigurer properties() {
+    return new PropertySourcesPlaceholderConfigurer();
+  }
+}
+----
+  
+[source, java]
+----
+@Value("${urlStringTemplate}")
+private String urlStringTemplate;
+----
+  
+== Adnotacja @Qualifier
+
+* Jeśli komponent posiada definicję XML można się odwołać do jego nazwy poprzez adnotację `@Qualifier`
+* Nazwa odnosi się do id komponentu lub specjalnego elementu `<qualifier />`
+
+[source, java]
+----
+@Autowired(required=true)
+public ReportGenerator(ITextService iTextService, 
+  @Qualifier("repService") ReportingService reportingService) {
+  super();
+  this.reportingService = reportingService;
+  this.iTextService = iTextService;
+}
+
+----
+  
+[source, xml]
+----
+<bean id="reportingService" 
+  class="com.example.springtraining.domain.ReportingService" >
+  <qualifier value="repService" />
+</bean>
+----
+
+== Cykl życia komponentu
+
+* Kontener odnajduje definicje komponentów będących singletonami
+* Następuje inicjacja singletonów
+* Dla każdego komponentu
+** Następuje wstrzykiwanie zależności
+** Następuje wywołanie metody interfejsu `BeanNameAware`
+** Następuje wywołanie metody interfejsu `ApplicationContextAware`
+** Następuje wywołanie metody `@PostConstruct`
+** Następuje wywołanie metody z interfejsu `InitializingBean`
+** Następuje wywołanie metody skonfigurowanej z użyciem `init-method`
+** Następuje wywołanie metody interfejsu `BeanPostProcessor`
+
+== Cykl życia komponentu (2)
+
+* Używanie komponentu
+* Następuje wywołanie metody `@PreDestroy`
+* Następuje wywołanie metody z interfejsu `DisposableBean`
+* Następuje wywołanie metody skonfigurowanej z użyciem `destroy-method`
+
+== Zdarzenia ApplicationContext
+
+
+[source, java]
+----
+public class ReportGenerator implements ApplicationContextAware {
+  
+  public void runReport() {
+    // ...
+    ReportEvent reportEvent = new ReportEvent(applicationContext);
+    applicationContext.publishEvent(reportEvent);
+  }
+}
+----
+  
+[source, java]
+----
+public class CompanyDao implements ApplicationListener<ReportEvent> {
+
+  @Override
+  public void onApplicationEvent(ReportEvent event) {
+    // ...
+  }
+}
+----
+  
+== Standardowe zdarzenia
+
+[cols="2,3"]
+|===
+a| *ContextRefreshEvent*
+a| Obiekt `ApplicationContext` jest inicjowany lub odświeżany (metodą `refresh()`)
+
+a| *ContextStartedEvent*
+a| Obiekt `ApplicationContext` został uruchomiony (metoda `start()`)
+
+a| *ContextStoppedEvent*
+a| Obiekt `ApplicationContext` został zatrzymany (metoda `stop()`)
+
+a| *ContexClosedEvent*
+a| Obiekt `ApplicationContext` został zakmnięty (metoda `close()`); wszystkie singletony zostały zniszczone
+
+a| *RequestHandleEvent*
+a| Zdarzenie generowane tuż po obsłużeniu żądania HTTP, w przypadku używania dostarczanego przez Spring `DispatcherServlet`
+|===
+   
+== Wsparcie dla testów
+
+* Wsparcie dla testów jest od zawsze obecne we frameworku (leżało u jego podstaw)
+* Zastosowanie wzorca _Inversion of Control_ umożliwia łatwe i wygodne testowanie jednostkowe – wszystkie zależności mogą być rozwiązane ręcznie i nie ma potrzeby implementowania interfejsów
+* Testowanie od najwcześniejszych etapów wspiera elastyczną architekturę
+
+== Przygotowanie testu integracyjnego
+
+* Adnotacja `@RunWith(SpringJUnit4ClassRunner.class)` powoduje że test staje się komponentem zarządzanym przez kontener (możliwe jest m.in. wstrzykiwanie zależności)
+* `@ContextConfiguration` umożliwia wywołanie istniejących konfiguracji (XML, JavaConfig)
+
+== Bean Validation – JSR 303
+
+* Standard opisu poprawności modelu oraz API do walidacji
+* Zestaw meta adnotacji opisujących poprawność danych (`@NotNull`, `@Size`, `@Min`, `@Max` itd.)
+* Referencyjna implementacja to Hibernate Validator
+* Spring może korzystać z referencyjnego walidatora, jak też z dostarczanego przez siebie adaptera (implementującego ten sam interfejs)
+
+== Bean Validation – JSR 303 (2)
+
+[source, java]
+----
+public class Employee {
+
+  @NotNull
+  @Size(min = 5)
+  private String name;
+
+  @NotNull
+  @Size(min = 10)
+  private String address;
+
+  @Past
+  private Date birthdate;
+
+  //..
+}
+----
+  
+== Bean Validation – JSR 303 (3)
+
+* Dostęp do walidatora odbywa się przez javax.validation.ValidationFactory
+
+[source, java]
+----
+
+Employee employee = new Employee();
+employee.setName("a");
+employee.setAddress("Lodz");
+
+ValidatorFactory validationFactory = 
+  Validation.buildDefaultValidatorFactory();
+
+Validator validator = validationFactory.getValidator();
+
+Set<ConstraintViolation<Employee>> constraints = 
+  validator.validate(employee);
+
+for (ConstraintViolation<Employee> violation : constraints) {
+  System.out.println( violation.getMessage() );
+}
+
+----
+  
+== Bean Validation – JSR 303 (4)
+
+* Metoda `validate()` sprawdza poprawność klasy
+** _object_ – obiekt do walidacji
+** _groups_ – grupa (lub lista grup) walidacyjnych
+* Grupa walidacyjna pozwala zawęzić zakres walidacji, tylko do pewnego podzbioru ograniczeń
+** Jest to pusty interfejs
+** Domyślna grupa walidacyjna to `javax.validation.groups.Default`
+
+== Bean Validation – JSR 303 (5)
+
+Everything can be abused
+
+image::annotatiomania.png[]
+
+== Bean Validation w Spring Framework
+
+* Komponent LocalValidationFactoryBean można bezpośrednio użyć w aplikacji Spring
+
+[source, java]
+----
+@Bean(name="validator")
+public LocalValidatorFactoryBean validator() {
+  return new LocalValidatorFactoryBean();
+}
+----
+  
+[source, xml]
+----
+<bean id="validator" 
+  class="o.s.v.beanvalidation.LocalValidatorFactoryBean" />
+----
+  
+[source, java]
+----
+@Autowired
+private Validator validator;
+
+public Set<ConstraintViolation<Param>> validate(Param p) {
+  return validator.validate(p, SearchValidationGroup.class);
+}
+
+----
+  
+== Tworzenie własnych walidatorów
+
+* Tworzymy adnotację na bazie adnotacji `@Constraint`
+* Implementujemy interfejs `ConstraintValidator`
+
+
+[source, java]
+----
+
+@NameFormatting
+public class Author implements Serializable {
+
+  //...
+
+}
+
+----
+
+== Tworzenie własnych walidatorów 
+
+
+[source, java]
+----
+@Target( { ElementType.METHOD, ElementType.FIELD, ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = NameFormattingValidator.class)
+public @interface NameFormatting {
+  String message() default "{c.e.constraints.nameFormatting}";
+
+  Class<?>[] groups() default {};
+
+  Class<? extends Payload>[] payload() default {};
+
+}
+----
+  
+== Tworzenie własnych walidatorów
+
+[source, java]
+----
+public class NameFormattingValidator implements
+  ConstraintValidator<NameFormatting, Author> {
+  private final String FORMATTING_REGEXP = "[A-Z][a-z]+";
+
+  public boolean isValid(Author author, 
+    ConstraintValidatorContext context) {
+    if (author == null) return true;
+
+    if (author.getName() != null 
+        && !author.getName().matches(FORMATTING_REGEXP)) {
+        return false;
+    }  
+      
+    if (author.getSurname() != null 
+        && !author.getSurname().matches(FORMATTING_REGEXP)) {
+        return false;
+    }  
+
+    return true;
+  }
+}
+
+----
+    
+== Błędy walidacji
+
+* Błędy walidacji przechowywane są w strukturze implementującej interfejs `ConstrainViolation`
+* Zwyczajowo błędy raportowane są za pomocą klucza: [nazwa_błedu].[obiekt].[atrybut_obiektu] np.: `Future.task.date`
+* Wartością jest domyślny opis błędu
+* Opisy błędu można z łatwością definiować i lokalizować wykorzystując mechanizm `ResourceBundles` i `MessageSource`
+
+== Walidacja historycznie - Interfejs Validator
+
+* Podstawowy interfejs do tworzenia obiektów walidujących klasy modelu
+
+[source, java]
+----
+public interface Validator {
+
+  public boolean supports(Class<?> arg0);
+
+  public void validate(Object arg0, Errors arg1);
+
+}
+
+----
+  
+== Walidacja historycznie - Przykładowy walidator
+
+
+[source, java]
+----
+public class EmployeeValidator implements Validator {
+
+  private static final int MAX_NAME_LENGHT = 30;
+  private static final int MAX_ADDRESS_LENGHT = 80;
+
+  @Override
+  public boolean supports(Class<?> clazz) {
+    return Employee.class.equals(clazz);
+  }
+
+  @Override
+  public void validate(Object object, Errors errors) {
+    ValidationUtils.rejectIfEmpty(errors, "name", "name.empty");
+    ValidationUtils.rejectIfEmpty(errors, "address", "address.empty");
+
+    Employee employee = (Employee) object;
+
+    if ( employee.getName().length() > MAX_NAME_LENGHT ) {
+      errors.rejectValue("name", "name.tooLong");
+    }
+
+    if ( employee.getName().length() > MAX_ADDRESS_LENGHT ) {
+      errors.rejectValue("address", "address.tooLong");
+    }
+  }
+}
+----
+  
+== Walidacja historycznie - Klasa Errors
+
+* Reprezentuje i przechowuje informacje na temat błędów związanych z walidacją
+* Umożliwia zarejestrowanie błędów dla obiektu lub pojedynczego pola
+* Najważniejsze metody
+** _reject(String errorCode [,String defaultMessage])_ +
+zarejestruje błąd dla całego obiektu; errorCode oznacza klucz błędu w `Properties`
+** _rejectValue(String field, String errorCode, [String defaultMessage]) +
+rejestruje błąd dla pojedynczego pola
+
+== Walidacja historycznie - Klasa ValidationUtils
+
+* Pomocnicza klasa walidacyjna 
+* Waliduje czy w obiekcie, pole nie jest puste
+* Działa na obiekcie typu Errors
+* Najważniejsze metody
+** _rejectIfEmpty(Errors errors, String field, String errorCode [,String defaultMessage])_ +
+zarejestruje błąd dla całego obiektu, jeśli pole jest puste
+** _rejectIfEmptyOrWhitespce(Errors errors, String field, String errorCode [,String defaultMessage])_ + 
+zarejestruje błąd dla całego obiektu, jeśli pole jest puste lub składa się tylko z białych znaków
+
+== Lokalizacja – i18n
+
+* Dodanie do konfiguracji komponentu MessageSource _informuje_ framework o istnieniu wersji językowych
+** Atrybut `basename` wskazuje lokalizację pliku z tłumaczeniami
+** Dla każdego kolejnego języka dodawana jest odpowiednia końcówka (`message_pl.properties`)
+
+== Lokalizacja aplikacji 
+
+* Interfejs `MessageSource` jest dostarczony przez framework w celu wsparcie i18n
+
+[source, xml]
+----
+<bean id="messageSource”
+  class="o.s.c.support.ReloadableResourceBundleMessageSource">
+  <property name="basename" value = "classpath:messages" />
+  <property name="defaultEncoding" value="UTF-8"/> 
+</bean>
+
+----
+  
+[source, java]
+----
+@Bean
+public ResourceBundleMessageSource messageSource() {
+  ResourceBundleMessageSource messageSource = 
+  	new ResourceBundleMessageSource();
+  messageSource.setBasename("messages");
+  messageSource.setDefaultEncoding("UTF-8");
+  return messageSource;
+}
+
+----
+  
+== Lokalizacja aplikacji (3)
+
+* Aby skorzystać z i18n potrzebujemy dostęp do obiektu `ApplicationContext` lub `MessageSource`
+* Wygodną metodą jest wstrzyknięcie `MessageSource` do klasy
+* Metoda `getMessage(String key, Object[] args, Locale locale)` służy do pobrania odpowiedniej wersji komunikatu
+* Mechanizm ten może być używany zarówno w walidacji i jak i całkowicie niezależnie
+* Używany jest w Spring MVC
+
+== Lokalizacja aplikacji (4)
+
+[source, java]
+----
+public class ValidationService {
+
+  private MessageSource messageSource;
+  private Validator validators;
+
+  public void validate(Employee object) {
+
+    Set<ConstraintViolation<Employee>> errors = 
+      validator.validate(object); 
+
+    for (ConstraintViolation<Employee> fieldError : errors) {
+      String field = fieldError.getPropertyPath();
+      String code = fieldError.getMessageTemplate();
+      String defaultMessage = fieldError.getMessage();
+
+      Locale locale = new Locale( "pl", "PL" );
+      messageSource.getMessage(code, new Object[]{}, locale);
+       // ...
+    }
+  }
+}
+----
+  

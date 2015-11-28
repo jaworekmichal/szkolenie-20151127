@@ -1,0 +1,88 @@
+= Moduł 1: Spring Framework
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Spring Framework
+
+* Koncepcja _POJO programming_
+* Misja Spring
+* Elementy frameworka
+* Ekosystem narzędzi SpringSource
+* Spring Framework a EJB
+    
+== Plain Old Java Objects
+
+* Obiekty nie związane z jakimkolwiek API
+* Nie implementują specyficznych interfejsów platformy (jak np EJB 2.x)
+* Nie są związane ze środowiskiem, serwerem, frameworkiem
+* Tylko przechowują dane i realizują usługi (funkcjonalności) biznesowe
+
+== POJO Programming
+
+* Zapewnia przenaszalność kodu
+** poprzez oderwanie od środowiska działania
+** kod może być współdzielony pomiędzy środowiskami
+* Wspiera testowalność
+** do uruchomienia nie jest wymagany kontener
+
+== Misja Spring Framework
+
+* Spring nie konkuruje z istniejącymi rozwiązaniami, które dobrze się sprawdzają. Zamiast tego wspiera ich integrację.
+* Spring nie wymusza API. Nie ma konieczności instalowania dodatkowych serwerów aplikacji. 
+
+== Misja Spring Framework
+
+* Spring ma być przyjemny w użyciu, podnosić efektywność programistów. Spring Framework ma po prostu działać.
+* Spring wspiera tworzenie wysokiej jakości, testowalnego oprogramowania.
+* Dobry obiektowy projekt aplikacji jest ważniejszy niż technologie
+
+== Elementy frameworka
+
+* Kontener wstrzykiwania zależności
+* Kontekst aplikacyjny – dostęp do zasobów zewnętrznych
+* Aspekty
+* Zarządzanie transakcjami,
+* Abstrakcja warstwy dostępu do danych
+
+== Elementy frameworka
+
+image::1000000000000243000001BF2ABD2237.png[]
+    
+== Projekty wspierające
+
+* Spring MVC 
+** własny kontener WWW oraz integracja z istniejącymi frameworkami
+* Spring Web Flow
+** rozwinięcie prostego MVC w kierunku zaawansowanych aplikacji webowych (m.in. controlled navigation)
+* Spring Web Service
+** Zdalne wywołania m.in. przez SOAP, usługi contract-first
+
+== Projekty wspierające (2)
+
+* Spring Security
+** autoryzacja i uwierzytelnianie w aplikacjach webowych
+* Spring Integration
+** Narzędzia do tworzenia systemów w oparciu o Enterprise Integration Patterns (ESB)
+* Spring Tool Suite
+** IDE, dodatek do Eclipse’a dedykowany do pracy z frameworkiem
+
+== Spring Framework a EJB 
+
+.Spring Framework
+* Dowolne łączenie bibliotek i narzędzi, włączanie modułów gdy zachodzi taka potrzeba.
+* Intensywny rozwój, nowe funkcjonalności pojawiają się z dużą regularnością
+
+.EJB
+* Monolityczna całość, funkcjonalności uruchamiane nawet gdy nie są wykorzystywane.
+* Specyfikacja rodzi się w bólach, przez lata. Wydania raz na kilka lat.
+
+== Spring Framework a EJB 
+
+.Spring Framework
+* Spring jest całością samą w sobie. Kontener Spring jest pomostem pomiędzy aplikacją a serwerem (środowiskiem) – uniezależniając system od konkretnego dostawcy.
+
+.EJB
+* Przenaszalność aplikacji jest fikcją. Specyfikacja nie dookreśla wielu aspektów, zmuszając programistę do wyboru konkretnej platformy (ang. vendor lock-in)

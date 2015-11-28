@@ -1,0 +1,158 @@
+= Moduł 5: Warstwa dostępu do danych
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Baza danych w Springu
+
+* Konfiguracja bazy danych 
+* Podstawowe metody dostępu do danych
+* JPA
+* Na czym polega zarządzanie encjami
+* Transakcje
+    
+== Szablon współpracy z bazą danych
+
+image::images/1000000000000248000001DB0F060EDD.png[]
+    
+== Szablon współpracy z bazą danych (2)
+
+* Większość operacji jest powtarzalna i stanowi pewien szablon.
+* Klasa JdbcTemplate stanowi tego typu szablon.
+* Programista zajmuje się przede wszystkim przygotowaniem zapytania i przetwarzaniem wyników.
+
+== Dostęp do danych w Springu
+
+* Spring umożliwia konfiguracja połączenia
+** bezpośrednio w pliku konfiguracyjnym
+** korzystając JNDI
+* Ostatecznie w ten sposób uzyskuje się obiekty typu `java.sql.DataSource`
+* Źródło danych wykorzystywane jest przez wybrany mechanizm persystencji 
+
+== Dostęp do danych w Springu (2)
+
+* Spring dostarcza klasę `DriverManagerDataSource`, którą można skonfigurować z użyciem parametrów
+** url – adres potrzebny do uzyskania połączenia
+** driverClassName – nazwa klasy sterownika
+** username, password – nazwa i hasło użytkownika
+
+== Dostęp do danych w Springu (3)
+
+* `DriverManagerDataSource` jest prostą implementacją interfejsu `DataSource`
+* Każde odwołanie się do puli tworzy nowe połączenie
+* Możliwe jest użycie ogólnodostępnych bibliotek do konfiguracji puli połączeń (np. Apache DBCP)
+
+== Dostęp do danych w Springu (4)
+
+[source, java]
+----
+<bean id="dataSource"
+class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+	<property name="url"
+	value="jdbc:mysql://localhost:3306/translations?useUnicode=true &amp;characterEncoding=utf-8" />
+	<property name="username" value="root" />
+	<property name="password" value="root" />
+</bean>
+----
+	
+[source, xml]
+----
+<bean id="dataSource"
+class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value=“org.postgresql.Driver " />
+	<property name="url"
+	value=" jdbc:postgresql://localhost:5432/translations" />
+	<property name="username" value="root" />
+	<property name="password" value="root" />
+</bean>
+----
+	
+== Dostęp do danych w Springu (4)
+
+
+[source, java]
+----
+@Bean
+public DataSource dataSource() {
+	DriverManagerDataSource ds = new DriverManagerDataSource();
+	ds.setDriverClassName(com.mysql.jdbc.Driver.class.getName());
+	ds.setUrl("jdbc:mysql://localhost:3306/translations? useUnicode=true&characterEncoding=utf-8");
+	ds.setUsername("root");
+	ds.setPassword("root");
+	return ds;
+}
+----
+	
+== Wykorzystanie JdbcTemplate
+
+* `JdbcTemplate` to komponent ułatwiający komunikację z bazą danych. 
+* Ogranicza on rolę programisty do konfiguracji połączenia do bazy oraz pisania zapytań SQL
+* Pozostałe czynności wykonuje framework 
+** otwieranie połączenia do bazy danych
+** pobranie wyników oraz iteracja po nich (`ResultSet`)
+** obsługa błędów i transakcji
+** zamknięcie połączenia do bazy danych
+
+== Właściwości JdbcTemplate
+
+* Na klasie `JdbcTemplate` opiera się całość obsługi JDBC w Springu
+* `JdbcTemplate` jest bezpieczny wątkowo (wystarczy konfiguracja tylko jednego komponentu)
+* Komponent może być współdzielony przez wiele serwisów
+* Umożliwia pobieranie danych, jak też ich zapis, aktualizację oraz wywoływanie procedur po stronie bazy danych
+
+== Rodzina komponentów JdbcTemplate
+
+* NamedParameterJdbcTemplate
+** Wprowadza możliwość nazywania parametrów (nie tylko ich indeksowania)
+* `SimpleJdbcTemplate`
+** Ulepszona wersja `JdbcTemplate` oparta o Java 1.5
+* `SimpleJdbcInsert` oraz `SimpleJdbcCall`
+** Upraszcza konfigurację do minimum bazując na meta informacjach dostarczonych przez bazę danych
+* `MappingSqlQuery`
+** Umożliwia mapowanie zapytań SQL na obiekty
+
+== Szablon JdbcTemplate
+
+* JdbcTemplate jest obiektem bezpiecznym z punktu widzenia wielowątkowości
+* Może być współdzielony przez wiele obiektów
+
+[source, java]
+----
+public class DataSourceRepository {
+
+	JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	public DataSourceRepository(DataSource ds) {
+		jdbcTemplate = new JdbcTemplate(ds);
+	}
+
+	public int countWords() {
+		return jdbcTemplate.queryForInt("select count(*) from words“)
+	}
+}
+----
+	
+== Złożone wyniki zapytań RowMapper
+
+* `RowMapper` umożliwia w ramach szablonu złożone przetwarzanie wyników.
+* Głównie służy do zwracania kolekcji obiektów powstałych na bazie zapytania.
+
+[source, java]
+----
+public List<DictionaryWord> getSavedWords() {
+	return jdbcTemplate.query("select * from words", 
+	new RowMapper<DictionaryWord>() {
+
+		public DictionaryWord mapRow(ResultSet rs, int rowNum)
+		 throws SQLException {
+			return DictionaryWord.fromPolishWord(rs.getString("polish_word"))
+			 .withEnglishWord(rs.getString("english_word"))
+			 .build();
+		}
+	});
+}
+----

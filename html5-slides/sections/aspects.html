@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta content="Asciidoctor 1.5.3" name="generator">
+<title>Moduł 4: Programowanie aspektowe</title>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="../deck.js/core/deck.core.css" rel="stylesheet">
+<link href="../deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/menu/deck.menu.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/navigation/deck.navigation.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/status/deck.status.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/style/swiss.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/transition/fade.css" media="screen" rel="stylesheet">
+<link href="../style.css" rel="stylesheet">
+<link href="../deck.js/core/print.css" media="print" rel="stylesheet">
+<script src="../deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Moduł 4: Programowanie aspektowe</h1>
+</section>
+<section class="slide" id="aspekty">
+<h2>Aspekty</h2>
+<div class="ulist">
+<ul>
+<li>Czym są aspekty?</li>
+<li>Sposób działania oraz typy aspektów</li>
+<li>Dołączenie aspektów do aplikacji</li>
+<li>Przygotowanie i konfiguracja porady</li>
+<li>Definiowanie punktów przecięcia</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="czym-są-aspekty">
+<h2>Czym są aspekty?</h2>
+<div class="ulist">
+<ul>
+<li>Aspekt umożliwia dekorowanie klasy dodatkowymi funkcjami, bez ingerencji w samą metodę.</li>
+<li>Pewnym specyficznym użyciem takiej architektury są filtry w aplikacjach webowych.</li>
+<li>Jest to architektura szczególnie przydatna podczas implementacji wymagań, które wykraczają poza jedną warstwę systemu.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="czym-są-aspekty-2">
+<h2>Czym są aspekty? (2)</h2>
+<div class="ulist">
+<ul>
+<li>Object-Oriented Desing – aplikacje złożone są z różnych hierarchii współpracujących ze sobą obiektów</li>
+<li>Aspect-Oriented Desing – wyróżnia w systemie aspekty, które w razie potrzeby mogą być włączane lub wyłączane</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="czym-są-aspekty-3">
+<h2>Czym są aspekty? (3)</h2>
+<div class="ulist">
+<ul>
+<li>Aspekt jest zaimplementowany w oddzielnym module / klasie</li>
+<li>Pozwala programiście skoncentrować się na implementowaniu logiki biznesowej</li>
+<li>Aspekt można wywoływać pomiędzy komponentami</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="czym-są-aspekty-4">
+<h2>Czym są aspekty? (4)</h2>
+<div class="imageblock">
+<div class="content">
+<img alt="aspects" src="../images/aspects.png">
+</div>
+</div>
+</section>
+<section class="slide" id="aspekty-pojęcia">
+<h2>Aspekty - pojęcia</h2>
+<div class="ulist">
+<ul>
+<li>Advice (porada): akcja, która jest wykonywana w ramach aspektu.</li>
+<li>Join point (czyli punkt złączenia): moment, w którym uruchamiana jest porada.</li>
+<li>Pointcut (punkt przecięcia): predykat, który musi zostać spełniony, aby nastąpiło przecięcie.</li>
+<li>Aspekt: jest to byt łączący wszystkie trzy pojęcia w całość.</li>
+</ul>
+</div>
+<div class="paragraph"><p>TIP::Aspekt definiuje kod, który zostanie uruchomiany w momencie zaistnienia zdarzenia, określonego w punkcie przecięcia dla metod (lub obiektów) określonych w punkcie złączenia.</p></div>
+</section>
+<section class="slide" id="rodzaje-porad">
+<h2>Rodzaje porad</h2>
+<div class="ulist">
+<ul>
+<li>Before advice: porada uruchamiana jest przed akcją określoną w punkcie złączenia, nie mająca możliwości jej zablokowania.</li>
+<li>After returning advice: porada uruchamiana jest w momencie poprawnego zakończenia operacji (metody nie zwróciła wyjątku).</li>
+<li>After throwing advice: analogicznie do poprzedniego przypadku, z tą różnicą że akcja wywoływana jest w momencie zwrócenia wyjątku.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="rodzaje-porad-2">
+<h2>Rodzaje porad</h2>
+<div class="ulist">
+<ul>
+<li>After advice: porada wykonywana zawsze po wywołaniu metody opisanej w punkcie złączenia</li>
+<li>Around advice: najpotężniejszy typ porad, uruchamiany przed wywołaniem akcji określonej w punkcie złączenia, mogący zablokować wywołanie metody lub dodatkowo zinterpretować zwrócony wynik.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="różne-implementacje">
+<h2>Różne implementacje</h2>
+<div class="ulist">
+<ul>
+<li>W trakcie kompilacji – kod aplikacji jest modyfikowany w trakcie kompilowania</li>
+<li>W trakcie ładowania klasy – aspekty dołączane są klas w momencie ich ładowania przez maszynę wirtualną</li>
+<li>W trakcie wykonywania – obiekty są dynamicznie zastępowane (wzorzec proxy) przez środowisko AOP</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="aspekty-na-niskim-poziomie">
+<h2>Aspekty na niskim poziomie</h2>
+<div class="ulist">
+<ul>
+<li>Bez użycia aspektów klient komunikuje się bezpośrednio z komponentem</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img alt="aspects no proxy" src="../images/aspects-no-proxy.png">
+</div>
+</div>
+</section>
+<section class="slide" id="aspekty-na-niskim-poziomie-2">
+<h2>Aspekty na niskim poziomie</h2>
+<div class="ulist">
+<ul>
+<li>Aspekt wymusza komunikację z obiektem przez proxy</li>
+<li>Metody przestają być wywoływane bezpośrednio dlatego istnieje możliwość wstrzyknięcia dodatkowej funkcjonalności</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img alt="aspects proxy" src="../images/aspects-proxy.png">
+</div>
+</div>
+</section>
+<section class="slide" id="implementacja">
+<h2>Implementacja</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;beans&gt;</span>
+        <span class="tag">&lt;aop:aspectj-autoproxy</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/beans&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Configuration</span>
+<span class="annotation">@EnableAspectJAutoProxy</span>
+<span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">AppConfiguration</span> {
+        <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="implementacja-2">
+<h2>Implementacja (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Component</span>
+<span class="annotation">@Aspect</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">AuditLoggingAspect</span> {
+
+  <span class="annotation">@Before</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">execution(* com.example.service.Clazz.method(*))
+           &amp;&amp; args(params,..)</span><span class="delimiter">&quot;</span></span>)
+  <span class="directive">public</span> <span class="type">void</span> logWebServiceCall(CommandParameters params) {
+          <span class="comment">//..</span>
+  }
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="rodzaje-porad-adnotacje">
+<h2>Rodzaje porad - adnotacje</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<strong>@Before</strong><div class="ulist">
+<ul>
+<li>Before advice jest uruchamiana przed wywołaniem metody określonej przez pointcut</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>@After</strong><div class="ulist">
+<ul>
+<li>Jest uruchamiana po wywołaniu metody określonej przez pointcut</li>
+<li>Uruchomienie nastąpi również, gdy metoda zostanie zakończona błędem</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="rodzaje-porad-adnotacje-2">
+<h2>Rodzaje porad – adnotacje (2)</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<strong>@AfterReturning</strong><div class="ulist">
+<ul>
+<li>Jest uruchamiana po poprawnym wywołaniu metody określonej przez pointcut</li>
+<li>Wiążąc parametr result adnotacji z nazwą parametru funkcji, można przechwycić rezultat wykonania metody obiektu docelowego</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@AfterReturning</span>( value=<span class="string"><span class="delimiter">&quot;</span><span class="content">bean(*)</span><span class="delimiter">&quot;</span></span>, returning=<span class="string"><span class="delimiter">&quot;</span><span class="content">result</span><span class="delimiter">&quot;</span></span> )
+<span class="directive">public</span> <span class="type">void</span> afterReturning( <span class="predefined-type">Object</span> result ) {
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="rodzaje-porad-adnotacje-3">
+<h2>Rodzaje porad – adnotacje (3)</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<strong>@AfterThrowing</strong><div class="ulist">
+<ul>
+<li>Jest uruchamiana po wyrzuceniu wyjątku przez metodę określoną w pointcut</li>
+<li>Dostęp do rzuconego wyjątku odbywa się poprzez powiązanie parametru metody z parametrem adnotacji @AfterThrowing</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@AfterThrowing</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">bean(*)</span><span class="delimiter">&quot;</span></span>, throwing=<span class="string"><span class="delimiter">&quot;</span><span class="content">ex</span><span class="delimiter">&quot;</span></span> )
+<span class="directive">public</span> <span class="type">void</span> after( MyException ex ) {
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="rodzaje-porad-adnotacje-4">
+<h2>Rodzaje porad – adnotacje (4)</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<strong>@Around</strong><div class="ulist">
+<ul>
+<li>Around advice przechwytuje wykonanie metody</li>
+<li>Pierwszym parametrem metody musi być referencja typu ProcedingJoinPoint reprezentujący aktualny joinpoint</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Around</span>( <span class="string"><span class="delimiter">&quot;</span><span class="content">bean(*)</span><span class="delimiter">&quot;</span></span> )
+<span class="directive">public</span> <span class="predefined-type">Object</span> around( ProceedingJoinPoint p ) <span class="directive">throws</span> <span class="predefined-type">Throwable</span> {
+        <span class="keyword">return</span> p.proceed();
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="rodzaje-porad-adnotacje-5">
+<h2>Rodzaje porad – adnotacje (5)</h2>
+<div class="ulist">
+<ul>
+<li>Za pomocą wyrażenia args() można przechwycić parametry, z którymi wywoływana jest metoda obiektów docelowego</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Before</span>( value=<span class="string"><span class="delimiter">&quot;</span><span class="content">bean(*) &amp;&amp; args(params)</span><span class="delimiter">&quot;</span></span>, argNames=<span class="string"><span class="delimiter">&quot;</span><span class="content">params</span><span class="delimiter">&quot;</span></span> )
+<span class="directive">public</span> <span class="type">void</span> around( <span class="predefined-type">Object</span> params ) {
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="punkty-przecięć">
+<h2>Punkty przecięć</h2>
+<div class="ulist">
+<ul>
+<li>Pointcuts definiowane są za pomocą języka wyrażeń AspectJ</li>
+<li><p>
+Ze względu na specyfikę Spring AOP najczęściej używanym wyrażeniem jest<div class="ulist">
+<ul>
+<li>execution( modyfikator typ_zwracany klasa_interfejs nazwa_metody(parametry) wyjątki)</li>
+</ul>
+</div></p></li>
+<li>Wyrażenie execution aplikowane jest do wywołania metody</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="punkty-przecięć-definicje">
+<h2>Punkty przecięć - definicje</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:33%">
+<col style="width:66%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>modyfikator</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">public, private, protected, final, *</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>typ_zwracany</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">void, java.lang.String, java.util.Map, *</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>klasa_interfejs</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Klasa/interfejs w której zadeklarowana jest metoda foo.Test, com.example..* (wraz z podpakietami)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>nazwa_metody</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Find*, *</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>parametry</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(), ( java.util.List )* jeden parametr dowolnego typu(..) dowolna liczba parametrów</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>wyjątki</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">throws foo.ApplicationException</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="slide" id="punkty-przecięć-definicje-2">
+<h2>Punkty przecięć - definicje (2)</h2>
+<table class="tableblock frame-all grid-all" style="width:100%">
+<colgroup>
+<col style="width:22%">
+<col style="width:77%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">within</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>Wszystkie metody danej klasy<br>
+<code>within(com.example.services.ShopService)</code></p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">args</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>Wszystkie metody posiadające wskazane parametry<br>
+<code>args(java.lang.String, int)</code></p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@args</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>Wszystkie metody, których parametry oznaczone są adnotacjami<br>
+<code>@args(java.lang.Override)</code></p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@within</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>Wszystkie metody klasy oznaczone daną adnotacją<br>
+<code>@within(org.springframework.stereotype.Repository)</code></p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@annotation</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>Wszystkie metody oznaczone daną adnotacją<br>
+<code>@annotation(java.lang.Override)</code></p></div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bean</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph"><p>Specyficzna dla Spring AOP, wskazuje określony komponent<br>
+<code>bean(shopService)</code></p></div></div></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section class="slide" id="punkty-przecięć-przykłady">
+<h2>Punkty przecięć - przykłady</h2>
+<div class="ulist">
+<ul>
+<li><code>execution( * *(..) )</code></li>
+<li><code>execution( public java.util.Set pl.sevices..find*(..) )</code></li>
+<li><code>execution( * *(..) ) throws Exception )</code></li>
+<li><code>@annotation( org.springframework.beans.factory.annotation.Value )</code></li>
+<li><code>within( * )</code></li>
+<li><code>bean( * )</code></li>
+<li><code>bean( * Service )</code></li>
+<li><code>within( com.example..* )</code></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="introductions">
+<h2>Introductions</h2>
+<div class="ulist">
+<ul>
+<li>Wprowadzenie (introduction) polega na dodaniu do klasy funkcjonalności, której nie posiada</li>
+<li>Wprowadzenie w Spring AOP realizowane jest poprzez dynamiczne dodanie nowych metod obiektu</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="introductions-interfejsy-2">
+<h2>Introductions - interfejsy (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">Named</span> {
+        <span class="directive">public</span> <span class="type">void</span> setName(<span class="predefined-type">String</span> name);
+        <span class="directive">public</span> <span class="predefined-type">String</span> getName();
+}
+
+<span class="directive">public</span> <span class="type">class</span> <span class="class">NamedImpl</span> <span class="directive">implements</span> Named {
+        <span class="directive">private</span> <span class="predefined-type">String</span> name;
+        <span class="comment">//..getters and setters ommitted</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="introductions-interfejsy-3">
+<h2>Introductions - interfejsy (3)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">interface</span> <span class="class">ShopService</span> {
+        <span class="directive">public</span> <span class="type">void</span> buy();
+}
+
+<span class="annotation">@Service</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">shopService</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DefaultShopService</span> <span class="directive">implements</span> ShopService {
+        <span class="directive">public</span> <span class="type">void</span> buy() {
+                <span class="comment">//..</span>
+        }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="introductions-aspekt-4">
+<h2>Introductions - aspekt (4)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Component</span>
+<span class="annotation">@Aspect</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">NamedAspect</span> {
+  <span class="annotation">@DeclareParents</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.*ShopService</span><span class="delimiter">&quot;</span></span>,
+                  defaultImpl=NamedImpl.class)
+  <span class="directive">public</span> <span class="directive">static</span> Named feature;
+    <span class="comment">//..</span>
+  }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="introductions-wywołanie-5">
+<h2>Introductions - wywołanie (5)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">ApplicationContext ctx = ...
+
+ShopService service = ctx.getBean(<span class="string"><span class="delimiter">&quot;</span><span class="content">shopService</span><span class="delimiter">&quot;</span></span>,
+        ShopService.class);
+service.buy();
+
+Named namedService = (Named) service;
+namedService.setName(<span class="string"><span class="delimiter">&quot;</span><span class="content">defaultShopService</span><span class="delimiter">&quot;</span></span>);</code></pre>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">&#8592;</a>
+<a class="deck-next-link" href="#" title="Next">&#8594;</a>
+</div>
+<p aria-role="status" class="deck-status">
+<span class="deck-status-current"></span>
+/
+<span class="deck-status-total"></span>
+</p>
+</div>
+<script src="../deck.js/jquery.min.js"></script>
+<script src="../deck.js/core/deck.core.js"></script>
+<script src="../deck.js/extensions/scale/deck.scale.js"></script>
+<script src="../deck.js/extensions/menu/deck.menu.js"></script>
+<script src="../deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="../deck.js/extensions/status/deck.status.js"></script>
+<script>
+  (function($, deck, undefined) {
+    $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+    $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+  
+    $.extend(true, $[deck].defaults, {
+        countNested: false
+    });
+  
+    $.deck('.slide');
+  })(jQuery, 'deck');
+</script>
+<style>
+  .slide.canvas-image {
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: -moz-box;
+  display: -webkit-box;
+  display: -ms-box;
+  display: box;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+  -ms-box-orient: vertical;
+  box-orient: vertical;
+  -moz-box-align: start;
+  -webkit-box-align: start;
+  -ms-box-align: start;
+  box-align: start;
+  -moz-box-pack: start;
+  -webkit-box-pack: start;
+  -ms-box-pack: start;
+  box-pack: start;}
+  
+  .bottom-left {
+    left: 1%;
+    bottom: 20%; }
+  
+  .top-left {
+    left: 1%;
+    top: 20%; }
+  
+  .bottom-right {
+    right: 1%;
+    bottom: 20%; }
+  
+  .top-right {
+    right: 1%;
+    top: 20%; }
+  
+  .center-up {
+    right: 50%;
+    top: 1%;
+  }
+  
+  .center-down {
+    right: 50%;
+    bottom: 1%;
+  }
+  .canvas-image .canvas-caption p {
+    text-align: center;
+    padding-top: 0;
+    padding: 0;
+    -moz-transform: none;
+    -webkit-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+    display: inline;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    font-weight: bold;
+    font-size: 58px;
+    -webkit-box-shadow: 2px 2px 2px #000;
+    -moz-box-shadow: 2px 2px 2px #000;
+    box-shadow: 2px 2px 2px #000;
+    padding: 1rem;
+    color: white; }
+  kbd.keyseq { color: #555555; }
+  kbd:not(.keyseq) {
+    display: inline-block;
+    color: #222222;
+    font-size: 0.7em;
+    line-height: 1.4;
+    background-color: #F7F7F7;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    margin: -0.15em 0.15em 0 0.15em;
+    padding: 0.2em 0.6em;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  kbd kbd:first-child { margin-left: 0; }
+  kbd kbd:last-child { margin-right: 0; }
+</style>
+</body>
+</html>

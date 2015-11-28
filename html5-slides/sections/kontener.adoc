@@ -1,0 +1,284 @@
+= Moduł 2: Kontener Spring
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Kontener Spring
+
+* Kontener, fabryka komponentów
+* Tworzenie komponentów
+* Standard JSR-330
+* Konfiguracja kontekstu: adnotacje, XML, JavaConfiguration
+* Zakresy komponentów
+* Cykl życia komponentu
+    
+== Minimalizacja wewnętrznych zależności
+
+* Kod trudny w testowaniu, rozbudowie, utrzymaniu
+* Kod staje się niemożliwy do przeniesienia
+
+[source, java]
+----
+public class ShopServlet extends HttpServlet {
+	private ShopDao shopDao;
+
+	public ShopServlet() {
+		shopDao = new ShopDao();
+
+		PasswordVerifier.getInstance().verify();
+		//...
+	}
+}
+----
+	
+== Minimalizacja wewnętrznych zależności
+
+* Używanie obiektów typu POJO
+** Obiekty nie związane z jakimkolwiek API
+** Zapewnia testowalność i przenaszalność kodu
+* Programowanie poprzez interfejsy
+** Powiązania między interfejsami czynią kod bardziej elastycznym
+** Nadużywanie interfejsów może być bardziej kłopotliwe niż ich brak
+* Wstrzykiwanie zależności
+* Podejście aspektowe
+
+== Kontener Spring
+
+* Fabryka komponentów: dostarcza obiektów gotowych do użycia.
+* Rozwiązuje zależności pomiędzy komponentami; w sposób automatyczny bądź na podstawie konfiguracji.
+* Zarządza cyklem życia obiektów
+
+== Komponent Spring
+
+* Aby Spring rozpoczął zarządzanie obiektem należy umieścić go w kontenerze
+* Umieszczenie polega na dodaniu wpisu do deskryptora XML lub dodaniu adnotacji do klasy obiektu
+* Obiekt umieszczony w kontenerze staje się komponentem zarządzanym (managed bean)
+
+== Kontener
+
+* `BeanFactory`
+** Tworzy komponenty i zarządza cyklem ich życia
+* `ApplicationContext`
+** Dostarcza mechanizm obsługi zdarzeń
+** Wspiera internacjonalizację aplikacji
+** Wstępnie inicjalizuje komponenty
+** Rejestruje i uruchamia obiekty rozszerząjace cykl życia kontenera
+
+== Implementacje BeanFactory
+
+* `XmlBeanFactory`
+** Odczytuje konfigurację z pliku XML
+* `SimpleJndiBeanFactory`
+** Poszukuje komponentów zarejestrowanych w drzewie JNDI (na serwerze aplikacji) w przestrzeni `java:comp/env`
+
+== Implementacje ApplicationContext
+
+* `ClasspathXmlApplicationContext`
+** Pobiera konfigurację XML z plików znajdujących się w ścieżce classpath. Wykorzystane w aplikacjach standalone
+* `FileSystemXmlApplicationContext`
+** Pobiera konfigurację XML z plików znajdujących się w systemie plików. Wykorzystane w aplikacjach standalone
+
+== Implementacje ApplicationContext (2)
+
+* `AnnotationConfigApplicationContext`
+** Wykorzystuje konfigurację opartą o adnotację i JavaConfig. Wykorzystane w aplikacjach standalone
+* `*WebApplicationContext`
+** Kontekst wykorzystywany w aplikacjach webowych; konfiguracja odczytywana z katalogu WEB-INF
+* `Static*ApplicationContext`
+** Konfiguracja wykorzystywana w testach
+
+== Tworzenie komponentów
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns=http://www.springframework.org/schema/beans
+xmlns:xsi=http://www.w3.org/2001/XMLSchema-instance
+xmlns:context=http://www.springframework.org/schema/context
+xsi:schemaLocation="http://www.springframework.org/schema/beans 
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context 
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+ 
+	<context:annotation-config />
+	<context:component-scan base-package="com.example.spring.*" />
+
+</beans>
+----
+	
+== Tworzenie komponentów
+
+Włącza obsługę adnotacji konfiguracyjnych – takich, które nie definiują komponentu
+
+[source, xml]
+----
+<context:annotation-config />
+----
+	
+== Tworzenie komponentów
+
+Pozwala wykrywać adnotacje definiujące komponenty: `@Component`, `@Service`, `@Repository`, `@Controller`
+
+[source, xml]
+----
+	<context:component-scan base-package="com.example.spring.*" />
+----
+	
+== Tworzenie komponentów
+
+Atrybuty `include-filter` oraz `exclude-filter` mogą regulować czy konkretne klasy zostaną dołączone do projektu.
+
+[source, xml]
+----
+<context:component-scan base-package="com.example.spring.*">
+	<context:exclude-filter type="regex" expression=".*Service"/>
+</context:component-scan> 
+----
+	
+== Tworzenie komponentów
+
+* Adnotacja `@Component` jest wystarczająca aby dodać nowy komponent do kontekstu
+* Adnotacje `@Service`, `@Resource` bądź `@Controller` dodatkowo opisują cel istnienia komponentu i umożliwiają budowę elastycznej konfiguracji
+
+[source, java]
+----
+@Component
+public class ExampleService {
+
+	public String getMessage() {
+		return "Hello world!";
+	}
+ 
+}
+----
+	
+== Nazewnictwo komponentów
+
+* Komponenty w Spring Framework rozróżniane są po nazwie. +
+Domyślna nazwa generowana jest automatycznie, zgodnie z konwencją _JavaBeans_, tj. obiekt klasy `UserData` otrzyma nazwę `userData`
+
+[source, java]
+----
+@Component( "myService" )
+public class ShopService {
+}
+----
+
+[source, xml]
+----
+<bean id="shopService" class="foo.ShopService" />
+----
+
+[source, java]
+----
+@Component
+@Named( "myService" )
+public class ShopService {
+}
+----
+	
+== Łączenie komponentów
+
+* Adnotacją `@Autowired` można łączyć komponenty ze sobą.
+* Oznaczamy pole klasy, modyfikator (_setter_) lub konstruktor
+
+[source, java]
+----
+@Component
+public class ExampleService {
+
+	@Autowired
+	AnotherService service;
+
+	public String getMessage() {
+		return service.set("Hello world!");
+	}
+ 
+}
+
+----
+	
+== JSR 330
+
+* Adnotacje `@Named` i `@Inject` ustandaryzowały wstrzykiwanie zależności
+* Gwarantują przenaszalność kodu pomiędzy frameworkami Dependency Injection.
+
+[source, java]
+----
+@Named
+public class ExampleService {
+
+	@Inject
+	AnotherService service;
+
+	public String getMessage() {
+		return service.say("Hello world!");
+	}
+ 
+}
+
+----
+	
+== Zakres działania komponentu
+
+* W odróżnieniu od EJB – komponenty nie podlegają zarządzaniu w oparciu o pulę
+* Podstawowe zakresy to: *singleton* i *prototype*
+** Każde pobranie komponentu typu *singleton* zwróci referencję do tej samej instancji
+** Przy każdym pobraniu komponentu *prototype* zostanie zwrócony nowy obiekt
+* Dodatkowe zakresy to _thread_, _request_, _session_ i _globalSession_.
+
+== Cykl życia komponentów
+
+* najpopularniejszą metodą połączenia komponentu ze zdarzeniami kontenera jest użycie adnotacji `@PostConstruct` i `@PreDestroy`
+
+[source, java]
+----
+@Named
+public class ExampleService {
+
+	@PostConstruct
+	public void startup() {
+		System.out.println("Preparing the message...");
+	}
+
+	@PreDestroy
+	public void shutdown() {
+		System.out.println("...finishing.");
+	}
+}
+----
+	
+== Cykl życia komponentów
+
+* Implementując interfejsy `InitializingBean` oraz `DisposableBean`, wymuszana jest implementacja metod _afterPropertiesSet()_ oraz _destroy()_.
+
+[source, java]
+----
+@Named
+public class ExampleService implements 
+	InitializingBean, DisposableBean {
+
+	public void afterPropertiesSet() throws Exception {
+		System.out.println("Preparing the message...");
+	}
+
+	public void destroy() throws Exception {
+		System.out.println("...finishing.");
+	}
+	 
+}
+----
+	
+== Cykl życia komponentów
+
+* Bez konieczności implementowania specyficznych interfejsów można wymusić wywołanie poprzednich metod z poziomu konfiguracji XML
+
+[source, xml]
+----
+<bean class="com.example.spring.example001.ExampleService" 
+	init-method="afterPropertiesSet”
+	destroy-method="destroy"
+/>
+----

@@ -1,0 +1,307 @@
+= Moduł 4: Programowanie aspektowe
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Aspekty
+
+* Czym są aspekty?
+* Sposób działania oraz typy aspektów
+* Dołączenie aspektów do aplikacji
+* Przygotowanie i konfiguracja porady
+* Definiowanie punktów przecięcia
+
+== Czym są aspekty?
+
+* Aspekt umożliwia dekorowanie klasy dodatkowymi funkcjami, bez ingerencji w samą metodę. 
+* Pewnym specyficznym użyciem takiej architektury są filtry w aplikacjach webowych.
+* Jest to architektura szczególnie przydatna podczas implementacji wymagań, które wykraczają poza jedną warstwę systemu.
+
+== Czym są aspekty? (2)
+
+* Object-Oriented Desing – aplikacje złożone są z różnych hierarchii współpracujących ze sobą obiektów
+* Aspect-Oriented Desing – wyróżnia w systemie aspekty, które w razie potrzeby mogą być włączane lub wyłączane
+
+== Czym są aspekty? (3)
+
+* Aspekt jest zaimplementowany w oddzielnym module / klasie
+* Pozwala programiście skoncentrować się na implementowaniu logiki biznesowej
+* Aspekt można wywoływać pomiędzy komponentami
+
+== Czym są aspekty? (4)
+
+image::images/aspects.png[]
+
+== Aspekty - pojęcia
+
+* Advice (porada): akcja, która jest wykonywana w ramach aspektu.
+* Join point (czyli punkt złączenia): moment, w którym uruchamiana jest porada.
+* Pointcut (punkt przecięcia): predykat, który musi zostać spełniony, aby nastąpiło przecięcie. 
+* Aspekt: jest to byt łączący wszystkie trzy pojęcia w całość. 
+
+TIP::Aspekt definiuje kod, który zostanie uruchomiany w momencie zaistnienia zdarzenia, określonego w punkcie przecięcia dla metod (lub obiektów) określonych w punkcie złączenia.
+
+== Rodzaje porad
+
+* Before advice: porada uruchamiana jest przed akcją określoną w punkcie złączenia, nie mająca możliwości jej zablokowania.
+* After returning advice: porada uruchamiana jest w momencie poprawnego zakończenia operacji (metody nie zwróciła wyjątku).
+* After throwing advice: analogicznie do poprzedniego przypadku, z tą różnicą że akcja wywoływana jest w momencie zwrócenia wyjątku.
+
+== Rodzaje porad
+
+* After advice: porada wykonywana zawsze po wywołaniu metody opisanej w punkcie złączenia 
+* Around advice: najpotężniejszy typ porad, uruchamiany przed wywołaniem akcji określonej w punkcie złączenia, mogący zablokować wywołanie metody lub dodatkowo zinterpretować zwrócony wynik. 
+
+== Różne implementacje
+
+* W trakcie kompilacji – kod aplikacji jest modyfikowany w trakcie kompilowania
+* W trakcie ładowania klasy – aspekty dołączane są klas w momencie ich ładowania przez maszynę wirtualną
+* W trakcie wykonywania – obiekty są dynamicznie zastępowane (wzorzec proxy) przez środowisko AOP
+
+== Aspekty na niskim poziomie
+
+* Bez użycia aspektów klient komunikuje się bezpośrednio z komponentem
+
+image::images/aspects-no-proxy.png[]
+
+== Aspekty na niskim poziomie
+
+* Aspekt wymusza komunikację z obiektem przez proxy
+* Metody przestają być wywoływane bezpośrednio dlatego istnieje możliwość wstrzyknięcia dodatkowej funkcjonalności
+
+image::images/aspects-proxy.png[]
+
+== Implementacja
+
+[source, xml]
+----
+<beans>
+	<aop:aspectj-autoproxy />
+</beans>
+----
+	
+[source, java]
+----
+@Configuration
+@EnableAspectJAutoProxy
+public static class AppConfiguration {
+	//..
+}
+----
+	
+== Implementacja (2)
+
+[source, java]
+----
+@Component
+@Aspect
+public class AuditLoggingAspect {
+
+	@Before("execution(* com.example.service.Clazz.method(*)) && args(params,..)")
+	public void logWebServiceCall(CommandParameters params) {
+	}
+
+}
+
+----
+	
+== Rodzaje porad - adnotacje
+
+* @Before
+** Before advice jest uruchamiana przed wywołaniem metody określonej przez pointcut
+* @After
+** Jest uruchamiana po wywołaniu metody określonej przez pointcut
+** Uruchomienie nastąpi również, gdy metoda zostanie zakończona błędem
+
+== Rodzaje porad – adnotacje (2)
+
+* @AfterReturning
+** Jest uruchamiana po poprawnym wywołaniu metody określonej przez pointcut
+** Wiążąc parametr result adnotacji z nazwą parametru funkcji, można przechwycić rezultat wykonania metody obiektu docelowego
+
+[source, java]
+----
+@AfterReturning( value="bean(*)", returning="result" )
+public void afterReturning( Object result ) {
+
+}
+
+----
+	
+== Rodzaje porad – adnotacje (3)
+
+* @AfterThrowing
+** Jest uruchamiana po wyrzuceniu wyjątku przez metodę określoną w pointcut
+** Dostęp do rzuconego wyjątku odbywa się poprzez powiązanie parametru metody z parametrem adnotacji @AfterThrowing
+
+[source, java]
+----
+@AfterThrowing(value="bean(*)", throwing="ex” )
+public void after( MyException ex ) {
+}
+
+----
+	
+== Rodzaje porad – adnotacje (4)
+
+* @Around
+** Around advice przechwytuje wykonanie metody
+** Pierwszym parametrem metody musi być referencja typu ProcedingJoinPoint reprezentujący aktualny joinpoint
+
+[source, java]
+----
+@Around( "bean(*)" )
+public Object around( ProceedingJoinPoint p ) throws Throwable {
+	return p.proceed();
+}
+----
+	
+== Rodzaje porad – adnotacje (5)
+
+** Za pomocą wyrażenia args() można przechwycić parametry, z którymi wywoływana jest metoda obiektów docelowego
+
+[source, java]
+----
+@Before( value="bean(*) && args(params)", argNames="params" )
+public void around( Object params ) {
+
+}
+
+----
+	
+== Punkty przecięć
+
+* Pointcuts definiowane są za pomocą języka wyrażeń AspectJ
+* Ze względu na specyfikę Spring AOP najczęściej używanym wyrażeniem jest
+** execution( modyfikator typ_zwracany klasa_interfejs nazwa_metody(parametry) wyjątki)
+* Wyrażenie execution aplikowane jest do wywołania metody
+
+== Punkty przecięć - definicja
+
+[cols="1,4"]
+|===
+| modyfikator
+| public, private, protected, final, *
+
+| typ_zwracany
+| void, java.lang.String, java.util.Map, *
+
+| klasa_interfejs
+| Klasa/interfejs w której zadeklarowana jest metoda foo.Test, com.example..* (wraz z podpakietami)
+
+| nazwa_metody
+| Find*, *
+
+| parametry
+| (), ( java.util.List )* jeden parametr dowolnego typu(..) dowolna liczba parametrów
+
+| wyjątki
+| throws foo.ApplicationException
+|===
+    
+== Punkty przecięć – inne wyrażenia
+
+[cols="1,5"]
+|===
+| within
+a| Wszystkie metody danej klasy + 
+`within(com.example.services.ShopService)`
+
+| args
+a| Wszystkie metody posiadające wskazane parametry +
+`args(java.lang.String, int)`
+
+| @args
+a| Wszystkie metody, których parametry oznaczone są adnotacjami + 
+`@args(java.lang.Override)`
+
+| @within
+a| Wszystkie metody klasy oznaczone daną adnotacją + 
+`@within(org.springframework.stereotype.Repository)`
+
+| @annotation
+a| Wszystkie metody oznaczone daną adnotacją + 
+`@annotation(java.lang.Override)`
+
+| bean
+a| Specyficzna dla Spring AOP, wskazuje określony komponent + 
+`bean(shopService)`
+|===
+    
+== Punkty przecięć- przykłady
+
+`execution( * *(..) )`
+
+`execution( public java.util.Set pl.sevices..find*(..) )`
+
+`execution( * *(..) ) throws Exception )`
+
+`@annotation( org.springframework.beans.factory.annotation.Value )`
+
+`within( * )`
+
+`bean( * )`
+
+`bean( * Service )`
+
+`within( com.example..* )`
+
+== Introductions
+
+* Wprowadzenie (introduction) polega na dodaniu do klasy funkcjonalności, której nie posiada
+* Wprowadzenie w Spring AOP realizowane jest poprzez dynamiczne dodanie nowych metod obiektu
+
+== Introductions (2)
+
+[source, java]
+----
+public interface Named {
+	public void setName(String name);
+	public String getName();
+}
+
+public class NamedImpl implements Named {
+	private String name;
+	//..getters and setters ommitted
+}
+----
+	
+[source, java]
+----
+public interface ShopService {
+	public void buy();
+}
+
+@Service("shopService")
+public class DefaultShopService implements ShopService {
+	public void buy() {
+		//..
+	}
+}
+----
+	
+== Introductions (3)
+
+
+[source, java]
+----
+@Component 
+@Aspect
+public class NamedAspect {
+	@DeclareParents(value="com.example.*ShopService", defaultImpl=NamedImpl.class)
+	public static Named feature;
+	}
+----
+	
+[source, java]
+----
+ApplicationContext ctx = ...
+
+ShopService service = ctx.getBean("shopService", ShopService.class);
+service.buy();
+
+Named namedService = (Named) service;
+namedService.setName("defaultShopService");
+----

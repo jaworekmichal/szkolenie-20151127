@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta content="Asciidoctor 1.5.3" name="generator">
+<title>Moduł 7: Warstwa web</title>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="../deck.js/core/deck.core.css" rel="stylesheet">
+<link href="../deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/menu/deck.menu.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/navigation/deck.navigation.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/status/deck.status.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/style/swiss.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/transition/fade.css" media="screen" rel="stylesheet">
+<link href="../style.css" rel="stylesheet">
+<link href="../deck.js/core/print.css" media="print" rel="stylesheet">
+<script src="../deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Moduł 7: Warstwa web</h1>
+</section>
+<section class="slide" id="wprowadzenie-do-spring-mvc">
+<h2>Wprowadzenie do Spring MVC</h2>
+<div class="ulist">
+<ul>
+<li>Pojęcie FrontControllera i zasada działania aplikacji Spring MVC</li>
+<li>Kontrolery i widoki</li>
+<li>Odpowiedzi inne niż HTML (REST services)</li>
+<li>Testowanie aplikacji Spring MVC</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="działanie-dispatcher-servet">
+<h2>Działanie Dispatcher Servet</h2>
+<div class="imageblock">
+<div class="content">
+<img alt="Front controller" src="../images/front-controller.png" width="800">
+</div>
+</div>
+</section>
+<section class="slide" id="działanie-dispatcher-servet-2">
+<h2>Działanie Dispatcher Servet</h2>
+<div class="ulist">
+<ul>
+<li>Zapytanie trafia do <code>DispatcherServlet</code></li>
+<li>Spring MVC w oparciu o odpowiedni <code>HandlerMapper</code> wyszukuje kontroler do obsługi zapytania.</li>
+<li>Kontroler obsługuje żądanie</li>
+<li>Kontroler zwraca odpowiedź w określonym formacie</li>
+<li>Na podstawie informacji zwróconych przez kontroler <code>DispatcherServlet</code> wybiera widok w oparciu o konfigurację <code>ViewResolver</code>.</li>
+<li>Widok tworzy wynikową stronę HTML.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="web-xml">
+<h2>web.xml</h2>
+<div class="ulist">
+<ul>
+<li>Konfiguracja DispatcherServlet</li>
+<li>Spring zarządza cyklem życia żądania – w pełni używamy Spring MVC</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;servlet&gt;</span>
+  <span class="tag">&lt;servlet-name&gt;</span>appServlet<span class="tag">&lt;/servlet-name&gt;</span>
+  <span class="tag">&lt;servlet-class&gt;</span>
+    org.springframework.web.servlet.DispatcherServlet
+  <span class="tag">&lt;/servlet-class&gt;</span>
+  <span class="tag">&lt;load-on-startup&gt;</span>1<span class="tag">&lt;/load-on-startup&gt;</span>
+<span class="tag">&lt;/servlet&gt;</span>
+
+<span class="tag">&lt;servlet-mapping&gt;</span>
+  <span class="tag">&lt;servlet-name&gt;</span>appServlet<span class="tag">&lt;/servlet-name&gt;</span>
+  <span class="tag">&lt;url-pattern&gt;</span>/<span class="tag">&lt;/url-pattern&gt;</span>
+<span class="tag">&lt;/servlet-mapping&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="web-xml-2">
+<h2>web.xml (2)</h2>
+<div class="ulist">
+<ul>
+<li>Używając <code>ContextLoaderListener</code> możliwe jest użycie Springa (zarządzania komponentami) bez konieczności korzystania <code>DispatcherServlet</code> (Spring MVC)</li>
+<li>Odczytany kontekst dostępny jest poprzez statyczne metody komponentu <code>WebApplicationContextUtils</code>.</li>
+<li>Spring MVC jako pomost pomiędzy innymi frameworkami webowymi</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="web-xml-3">
+<h2>web.xml (3)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;context-param&gt;</span>
+  <span class="tag">&lt;param-name&gt;</span>contextConfigLocation<span class="tag">&lt;/param-name&gt;</span>
+  <span class="tag">&lt;param-value&gt;</span>classpath:META-INF/spring/app-*.xml<span class="tag">&lt;/param-value&gt;</span>
+<span class="tag">&lt;/context-param&gt;</span>
+
+<span class="tag">&lt;listener&gt;</span>
+  <span class="tag">&lt;listener-class&gt;</span>
+    org.springframework.web.context.ContextLoaderListener
+  <span class="tag">&lt;/listener-class&gt;</span>
+<span class="tag">&lt;/listener&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="servlet-context-xml">
+<h2>servlet-context.xml</h2>
+<div class="ulist">
+<ul>
+<li>Domyślna konfiguracja poprzez adnotacje</li>
+<li><code>ViewResolver</code> odpowiada za skierowanie zapytania do odpowiedniego widoku</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;mvc:annotation-driven</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;context:component-scan</span> <span class="attribute-name">base-package</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.todo</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+
+<span class="tag">&lt;bean</span>
+  <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">o.s.web.servlet.view.InternalResourceViewResolver</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">prefix</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">/WEB-INF/views/</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">suffix</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">.jsp</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/bean&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="spring-mvc-i-servlet-3-0">
+<h2>Spring MVC i Servlet 3.0</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">class</span> <span class="class">WebInitializer</span>
+  <span class="directive">implements</span> WebApplicationInitializer {
+
+  <span class="directive">public</span> <span class="type">void</span> onStartup(ServletContext container) {
+          <span class="comment">//..</span>
+  }
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="spring-mvc-i-servlet-3-0-2">
+<h2>Spring MVC i Servlet 3.0</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">AnnotationConfigWebApplicationContext rootContext =
+        <span class="keyword">new</span> AnnotationConfigWebApplicationContext();
+rootContext.register(AppConfig.class);
+container.addListener(<span class="keyword">new</span> ContextLoaderListener(rootContext));
+
+AnnotationConfigWebApplicationContext dispatcherContext =
+        <span class="keyword">new</span> AnnotationConfigWebApplicationContext();
+dispatcherContext.register(DispatcherConfig.class);
+
+ServletRegistration.Dynamic dispatcher =
+        container.addServlet(<span class="string"><span class="delimiter">&quot;</span><span class="content">dispatcher</span><span class="delimiter">&quot;</span></span>,
+                <span class="keyword">new</span> DispatcherServlet(dispatcherContext));
+dispatcher.setLoadOnStartup(<span class="integer">1</span>);
+dispatcher.addMapping(<span class="string"><span class="delimiter">&quot;</span><span class="content">/*</span><span class="delimiter">&quot;</span></span>);</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="spring-mvc-i-servlet-3-0-3">
+<h2>Spring MVC i Servlet 3.0</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Configuration</span>
+<span class="annotation">@EnableWebMvc</span>
+<span class="annotation">@ComponentScan</span>(basePackages = <span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.web</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">DispatcherConfig</span> {
+
+  <span class="annotation">@Bean</span>
+  <span class="directive">public</span> InternalResourceViewResolver view() {
+    InternalResourceViewResolver resolver =
+      <span class="keyword">new</span> InternalResourceViewResolver();
+    resolver.setPrefix(<span class="string"><span class="delimiter">&quot;</span><span class="content">/WEB-INF/views/</span><span class="delimiter">&quot;</span></span>);
+    resolver.setSuffix(<span class="string"><span class="delimiter">&quot;</span><span class="content">.jsp</span><span class="delimiter">&quot;</span></span>);
+    <span class="keyword">return</span> resolver;
+  }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="kontroler">
+<h2>Kontroler</h2>
+<div class="ulist">
+<ul>
+<li>Rola programisty Spring MVC ogranicza się do implementacji kontrolera oraz utworzenia widoku.</li>
+<li><p>
+Dobry kontroler nie powinien zawierać logiki biznesowej<div class="ulist">
+<ul>
+<li>po wstępnym przygotowaniu danych powinien wywołać komponenty z warstwy logiki biznesowej,</li>
+<li>po zakończeniu przetwarzanie – przekazać generacje strony do widoków.</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="kontroler-2">
+<h2>Kontroler</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Controller</span> <b class="conum">(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">HomeController</span> {
+
+        <span class="comment">//..</span>
+
+        <span class="annotation">@RequestMapping</span>(value = <span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span>, method = RequestMethod.GET)
+        <span class="directive">public</span> <span class="predefined-type">String</span> home(<span class="predefined-type">Locale</span> locale, Model model) {
+                <span class="comment">//..</span>
+                model.addAttribute(<span class="string"><span class="delimiter">&quot;</span><span class="content">serverTime</span><span class="delimiter">&quot;</span></span>, formattedDate );
+                <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">home</span><span class="delimiter">&quot;</span></span>;
+        }
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Począwszy od Spring 2.5 możemy budować kontrolery wyłącznie z użyciem adnotacji</p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="kontroler-3">
+<h2>Kontroler</h2>
+<div class="ulist">
+<ul>
+<li>Adnotacją <code>@Controller</code> jest uszczegółowieniem adnotacji <code>@Component</code> – dla Spring MVC</li>
+<li>Za pomocą <code>@RequestMapping</code> odbywa się mapowanie kontrolera na metodą HTTP oraz URL</li>
+<li>Poprzez <code>@RequestParam</code> definiujemy parametry przekazane w żądaniu</li>
+<li><p>
+Kontroler może zwrócić obiekty typu:<div class="ulist">
+<ul>
+<li>String (nazwa widoku)</li>
+<li>Obiekt typu Model (nazwa widoku jest wtedy zgodna z nazwą metody kontroler)</li>
+<li>ModelAndView</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="widok">
+<h2>Widok</h2>
+<div class="ulist">
+<ul>
+<li>W najprostszym przypadku – jest to plik JSP</li>
+<li>Atrybuty modelu dodawane są do kontekstu strony (servlet.PageContext)</li>
+<li>Obsługa znaczników JSP, JSTL i innych</li>
+<li>Dodatkowe znaczniki Spring MVC przeznaczone do obsługi formularzy (o czym za chwilę)</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="nie-tylko-html">
+<h2>Nie tylko HTML</h2>
+<div class="ulist">
+<ul>
+<li>Spring 3.1 wprowadził możliwość ‘negocjacji’ zawartości strony (ang. <em>content negotiations</em>)</li>
+<li>Klient wskazuje typ zawartości poprzez URL (rozszerzenie) lub nagłówki (<code>Accept: application/json</code>)</li>
+<li>Kontener deleguje zapytania do odpowiednich widoków</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="nie-tylko-html-2">
+<h2>Nie tylko HTML (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@RequestMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">/tasks</span><span class="delimiter">&quot;</span></span>, method=RequestMethod.GET,
+        produces=<span class="string"><span class="delimiter">&quot;</span><span class="content">application/json</span><span class="delimiter">&quot;</span></span>)
+<span class="annotation">@ResponseBody</span>
+<span class="directive">public</span> <span class="predefined-type">List</span>&lt;Task&gt; restTasks(Model model) {
+        <span class="predefined-type">List</span>&lt;Task&gt; tasks = service.getTasks();
+        <span class="keyword">return</span> tasks;
+}
+
+<span class="annotation">@RequestMapping</span>(value=<span class="string"><span class="delimiter">&quot;</span><span class="content">/tasks</span><span class="delimiter">&quot;</span></span>, method=RequestMethod.GET)
+<span class="directive">public</span> <span class="predefined-type">String</span> tasks(Model model) {
+        <span class="predefined-type">List</span>&lt;Task&gt; tasks = service.getTasks();
+        model.addAttribute(<span class="string"><span class="delimiter">&quot;</span><span class="content">tasks</span><span class="delimiter">&quot;</span></span>, tasks);
+        model.addAttribute(<span class="string"><span class="delimiter">&quot;</span><span class="content">task</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> Task());
+        <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">tasks</span><span class="delimiter">&quot;</span></span>;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="nie-tylko-html-3">
+<h2>Nie tylko HTML (3)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;dependency&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>jackson-core<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>2.5.0<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span>
+<span class="tag">&lt;dependency&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>jackson-databind<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>2.5.0<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="obsługa-wyjątków">
+<h2>Obsługa wyjątków</h2>
+<div class="ulist">
+<ul>
+<li>Kontener serwletów umożliwia obsługę sytuacji wyjątkowych</li>
+<li>Odpowiedni wpis w web.xml pozwala wyświetlić własną stronę błędu</li>
+<li>Atrybuty dotyczące błędu dołączone są do kontekstu żądania przez Servlet API</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;error-page&gt;</span>
+        <span class="tag">&lt;error-code&gt;</span>404<span class="tag">&lt;/error-code&gt;</span>
+        <span class="tag">&lt;location&gt;</span>/WEB-INF/views/errors/404.jsp<span class="tag">&lt;/location&gt;</span>
+<span class="tag">&lt;/error-page&gt;</span>
+
+<span class="tag">&lt;error-page&gt;</span>
+        <span class="tag">&lt;exception-type&gt;</span>java.lang.Exception<span class="tag">&lt;/exception-type&gt;</span>
+        <span class="tag">&lt;location&gt;</span>/WEB-INF/views/errors/500.jsp<span class="tag">&lt;/location&gt;</span>
+<span class="tag">&lt;/error-page&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="obsługa-wyjątków-2">
+<h2>Obsługa wyjątków (2)</h2>
+<div class="ulist">
+<ul>
+<li>Strona błędu wyświetlana jest bezpośrednio – z pominięciem filtrów</li>
+<li><p>
+Brak możliwości dodania dynamicznych danych – kontener wyświetla stronę taką jaka jest<div class="ulist">
+<ul>
+<li>Brak dostępu do warstwy logiki aplikacji</li>
+<li>Pominięcie interceptorów zdefiniowanych w aplikacji (logowanie, auditing)</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="obsługa-wyjątków-globalnie">
+<h2>Obsługa wyjątków - globalnie</h2>
+<div class="ulist">
+<ul>
+<li>Spring umożliwia dodanie własnego mechanizmu obsługującego wyjątki</li>
+<li>Ma on wyższy priorytet niż obsługa wyjątków zapisana w web.xml</li>
+<li>Wyjątek jest dostępny w widoku poprzez atrybut <code>${exception}</code></li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;bean</span>
+  <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">o.s.web.servlet.handler.SimpleMappingExceptionResolver</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">exceptionMappings</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;props&gt;</span>
+        <span class="tag">&lt;prop</span> <span class="attribute-name">key</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.lang.Exception</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>error_generic<span class="tag">&lt;/prop&gt;</span>
+      <span class="tag">&lt;/props&gt;</span>
+    <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/bean&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="obsługa-wyjątków-lokalnie">
+<h2>Obsługa wyjątków - lokalnie</h2>
+<div class="ulist">
+<ul>
+<li>Od wersji Spring 3 możliwe jest zdefiniowanie własnej obsługi wyjątków na poziomie kontrolera</li>
+<li>Obsługa dotyczy tylko i wyłącznie metod zdefiniowanych w kontrolerze</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@ExceptionHandler</span>(<span class="exception">BindException</span>.class)
+<span class="directive">public</span> ModelAndView validationErrorHandler(<span class="exception">Exception</span> ex) {
+        ModelAndView mv = <span class="keyword">new</span> ModelAndView();
+        mv.setViewName(<span class="string"><span class="delimiter">&quot;</span><span class="content">error_validation</span><span class="delimiter">&quot;</span></span>);
+        mv.addObject(<span class="string"><span class="delimiter">&quot;</span><span class="content">exception</span><span class="delimiter">&quot;</span></span>, ex);
+        <span class="keyword">return</span> mv;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="testowanie-aplikacji">
+<h2>Testowanie aplikacji</h2>
+<div class="ulist">
+<ul>
+<li>Spring dostarcza namiastek (ang. Mock Objects) ułatwiających tworzenie testów na pograniczu aplikacji i np. serwera aplikacji</li>
+<li>MockHttpServletRequest i MockHttpServletResponse umożliwiają testowanie kontrolerów bez konieczności uruchamiania kontenera</li>
+<li>ModelAndViewAssert upraszcza scenariusz testowe</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="testowanie-aplikacji-2">
+<h2>Testowanie aplikacji</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Autowired</span>
+ApplicationContext ctx;
+
+<span class="annotation">@Autowired</span>
+TaskController controller;
+
+<span class="annotation">@Test</span>
+<span class="directive">public</span> <span class="type">void</span> servletTest() <span class="directive">throws</span> <span class="exception">Exception</span> {
+        MockHttpServletRequest req =
+                <span class="keyword">new</span> MockHttpServletRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">/tasks</span><span class="delimiter">&quot;</span></span>);
+        MockHttpServletResponse resp = <span class="keyword">new</span> MockHttpServletResponse();
+        HandlerAdapter handlerAdapter = ctx
+                .getBean(AnnotationMethodHandlerAdapter.class);
+        <span class="directive">final</span> ModelAndView model = handlerAdapter.handle(req, resp, controller);
+
+        assertViewName(model, <span class="string"><span class="delimiter">&quot;</span><span class="content">tasks</span><span class="delimiter">&quot;</span></span>);
+        assertAndReturnModelAttributeOfType(model, <span class="string"><span class="delimiter">&quot;</span><span class="content">task</span><span class="delimiter">&quot;</span></span>, Task.class);
+        assertAndReturnModelAttributeOfType(model, <span class="string"><span class="delimiter">&quot;</span><span class="content">tasks</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">List</span>.class);
+
+        <span class="comment">//.. create testTask object</span>
+
+        assertModelAttributeValue(model, <span class="string"><span class="delimiter">&quot;</span><span class="content">tasks</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Arrays</span>.asList(testTask));
+        assertModelAttributeValue(model, <span class="string"><span class="delimiter">&quot;</span><span class="content">task</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> Task());
+}</code></pre>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">&#8592;</a>
+<a class="deck-next-link" href="#" title="Next">&#8594;</a>
+</div>
+<p aria-role="status" class="deck-status">
+<span class="deck-status-current"></span>
+/
+<span class="deck-status-total"></span>
+</p>
+</div>
+<script src="../deck.js/jquery.min.js"></script>
+<script src="../deck.js/core/deck.core.js"></script>
+<script src="../deck.js/extensions/scale/deck.scale.js"></script>
+<script src="../deck.js/extensions/menu/deck.menu.js"></script>
+<script src="../deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="../deck.js/extensions/status/deck.status.js"></script>
+<script>
+  (function($, deck, undefined) {
+    $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+    $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+  
+    $.extend(true, $[deck].defaults, {
+        countNested: false
+    });
+  
+    $.deck('.slide');
+  })(jQuery, 'deck');
+</script>
+<style>
+  .slide.canvas-image {
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: -moz-box;
+  display: -webkit-box;
+  display: -ms-box;
+  display: box;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+  -ms-box-orient: vertical;
+  box-orient: vertical;
+  -moz-box-align: start;
+  -webkit-box-align: start;
+  -ms-box-align: start;
+  box-align: start;
+  -moz-box-pack: start;
+  -webkit-box-pack: start;
+  -ms-box-pack: start;
+  box-pack: start;}
+  
+  .bottom-left {
+    left: 1%;
+    bottom: 20%; }
+  
+  .top-left {
+    left: 1%;
+    top: 20%; }
+  
+  .bottom-right {
+    right: 1%;
+    bottom: 20%; }
+  
+  .top-right {
+    right: 1%;
+    top: 20%; }
+  
+  .center-up {
+    right: 50%;
+    top: 1%;
+  }
+  
+  .center-down {
+    right: 50%;
+    bottom: 1%;
+  }
+  .canvas-image .canvas-caption p {
+    text-align: center;
+    padding-top: 0;
+    padding: 0;
+    -moz-transform: none;
+    -webkit-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+    display: inline;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    font-weight: bold;
+    font-size: 58px;
+    -webkit-box-shadow: 2px 2px 2px #000;
+    -moz-box-shadow: 2px 2px 2px #000;
+    box-shadow: 2px 2px 2px #000;
+    padding: 1rem;
+    color: white; }
+  kbd.keyseq { color: #555555; }
+  kbd:not(.keyseq) {
+    display: inline-block;
+    color: #222222;
+    font-size: 0.7em;
+    line-height: 1.4;
+    background-color: #F7F7F7;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    margin: -0.15em 0.15em 0 0.15em;
+    padding: 0.2em 0.6em;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  kbd kbd:first-child { margin-left: 0; }
+  kbd kbd:last-child { margin-right: 0; }
+</style>
+</body>
+</html>

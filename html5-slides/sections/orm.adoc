@@ -1,0 +1,66 @@
+= Moduł 6a: Mapowanie obiektowo - relacyjne
+:imagesdir: ../images
+:deckjsdir: ../deck.js
+:deckjs_transition: fade
+:navigation:
+:menu:
+
+== Spring i Hibernate
+
+* ORM w Spring Framework
+* Podstawy JPA 
+* Mapowanie relacji pomiędzy tabelami
+* Metody budowania zapytań
+* Mapowanie dziedziczenia 
+
+== Mapowanie obiektowo - relacyjne
+
+* Mapowanie obiektowo – relacyjne (ORM) to mechanizmy udostępniające warstwę abstrakcji ułatwiające korzystanie z baz danych
+* Są łącznikiem między światem obiektowym (Java) i relacyjnym (SQL)
+* Programista korzystający ze skonfigurowanego ORM nie musi znać struktur baz danych
+* ORM ukrywa szczegóły implementacji związanych z konkretnymi bazami danych
+
+== ORM w Springu
+
+* Spring umożliwia integrację z najpopularniejszymi narzędziami ORM (JPA, JDO, Hibernate, iBatis)
+* Framework dostarcza także własne podstawowe metody do pracy z obiektami (MappingSqlQuery)
+* Co daje użycie Spring:
+** Ułatwia zarządzanie zasobami (połączenie do bazy danych, źródła danych)
+** Oferuje zarządzanie transakcjami na poziomie aplikacji
+** Ułatwia testowanie
+
+== Mapowanie zapytań na obiekty
+
+* `MappingSqlQuery` ułatwia mapowanie zapytań SQL na obiekty (coś na wzór Named Queries w JPA)
+* Łączy w sobie zapytanie i obiektową reprezentacje
+
+[source, java]
+----
+public class TaskMappingQuery extends MappingSqlQuery<Task> {
+
+	public TaskMappingQuery(DataSource ds) {
+		super(ds, "select * from tasks");
+		compile();
+	}
+
+	protected Task mapRow(ResultSet rs, int n) 
+		throws SQLException {
+		//build and return Task object
+	}
+}
+----
+	
+== Mapowanie zapytań na obiekty (2)
+	
+[source, java]
+----
+public class TaskDao {
+
+	private TaskMappingQuery byIdMappingQuery;
+
+	public Task getTaskById(long id) {
+		Object[] parms = new Object[1] { Long.valueOf(id) };
+		return byIdMappingQuery.execute(parms).get(0);
+	}
+}
+----

@@ -1,0 +1,2599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+<meta content="Asciidoctor 1.5.3" name="generator">
+<title>Moduł 6b: JPA</title>
+<style>
+/* Stylesheet for CodeRay to match GitHub theme | MIT License | http://foundation.zurb.com */
+/*pre.CodeRay {background-color:#f7f7f8;}*/
+.CodeRay .line-numbers{border-right:1px solid #d8d8d8;padding:0 0.5em 0 .25em}
+.CodeRay span.line-numbers{display:inline-block;margin-right:.5em;color:rgba(0,0,0,.3)}
+.CodeRay .line-numbers strong{color:rgba(0,0,0,.4)}
+table.CodeRay{border-collapse:separate;border-spacing:0;margin-bottom:0;border:0;background:none}
+table.CodeRay td{vertical-align: top;line-height:1.45}
+table.CodeRay td.line-numbers{text-align:right}
+table.CodeRay td.line-numbers>pre{padding:0;color:rgba(0,0,0,.3)}
+table.CodeRay td.code{padding:0 0 0 .5em}
+table.CodeRay td.code>pre{padding:0}
+.CodeRay .debug{color:#fff !important;background:#000080 !important}
+.CodeRay .annotation{color:#007}
+.CodeRay .attribute-name{color:#000080}
+.CodeRay .attribute-value{color:#700}
+.CodeRay .binary{color:#509}
+.CodeRay .comment{color:#998;font-style:italic}
+.CodeRay .char{color:#04d}
+.CodeRay .char .content{color:#04d}
+.CodeRay .char .delimiter{color:#039}
+.CodeRay .class{color:#458;font-weight:bold}
+.CodeRay .complex{color:#a08}
+.CodeRay .constant,.CodeRay .predefined-constant{color:#008080}
+.CodeRay .color{color:#099}
+.CodeRay .class-variable{color:#369}
+.CodeRay .decorator{color:#b0b}
+.CodeRay .definition{color:#099}
+.CodeRay .delimiter{color:#000}
+.CodeRay .doc{color:#970}
+.CodeRay .doctype{color:#34b}
+.CodeRay .doc-string{color:#d42}
+.CodeRay .escape{color:#666}
+.CodeRay .entity{color:#800}
+.CodeRay .error{color:#808}
+.CodeRay .exception{color:inherit}
+.CodeRay .filename{color:#099}
+.CodeRay .function{color:#900;font-weight:bold}
+.CodeRay .global-variable{color:#008080}
+.CodeRay .hex{color:#058}
+.CodeRay .integer,.CodeRay .float{color:#099}
+.CodeRay .include{color:#555}
+.CodeRay .inline{color:#000}
+.CodeRay .inline .inline{background:#ccc}
+.CodeRay .inline .inline .inline{background:#bbb}
+.CodeRay .inline .inline-delimiter{color:#d14}
+.CodeRay .inline-delimiter{color:#d14}
+.CodeRay .important{color:#555;font-weight:bold}
+.CodeRay .interpreted{color:#b2b}
+.CodeRay .instance-variable{color:#008080}
+.CodeRay .label{color:#970}
+.CodeRay .local-variable{color:#963}
+.CodeRay .octal{color:#40e}
+.CodeRay .predefined{color:#369}
+.CodeRay .preprocessor{color:#579}
+.CodeRay .pseudo-class{color:#555}
+.CodeRay .directive{font-weight:bold}
+.CodeRay .type{font-weight:bold}
+.CodeRay .predefined-type{color:inherit}
+.CodeRay .reserved,.CodeRay .keyword {color:#000;font-weight:bold}
+.CodeRay .key{color:#808}
+.CodeRay .key .delimiter{color:#606}
+.CodeRay .key .char{color:#80f}
+.CodeRay .value{color:#088}
+.CodeRay .regexp .delimiter{color:#808}
+.CodeRay .regexp .content{color:#808}
+.CodeRay .regexp .modifier{color:#808}
+.CodeRay .regexp .char{color:#d14}
+.CodeRay .regexp .function{color:#404;font-weight:bold}
+.CodeRay .string{color:#d20}
+.CodeRay .string .string .string{background:#ffd0d0}
+.CodeRay .string .content{color:#d14}
+.CodeRay .string .char{color:#d14}
+.CodeRay .string .delimiter{color:#d14}
+.CodeRay .shell{color:#d14}
+.CodeRay .shell .delimiter{color:#d14}
+.CodeRay .symbol{color:#990073}
+.CodeRay .symbol .content{color:#a60}
+.CodeRay .symbol .delimiter{color:#630}
+.CodeRay .tag{color:#008080}
+.CodeRay .tag-special{color:#d70}
+.CodeRay .variable{color:#036}
+.CodeRay .insert{background:#afa}
+.CodeRay .delete{background:#faa}
+.CodeRay .change{color:#aaf;background:#007}
+.CodeRay .head{color:#f8f;background:#505}
+.CodeRay .insert .insert{color:#080}
+.CodeRay .delete .delete{color:#800}
+.CodeRay .change .change{color:#66f}
+.CodeRay .head .head{color:#f4f}
+</style>
+<link href="../deck.js/core/deck.core.css" rel="stylesheet">
+<link href="../deck.js/extensions/scale/deck.scale.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/menu/deck.menu.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/navigation/deck.navigation.css" media="screen" rel="stylesheet">
+<link href="../deck.js/extensions/status/deck.status.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/style/swiss.css" media="screen" rel="stylesheet">
+<link href="../deck.js/themes/transition/fade.css" media="screen" rel="stylesheet">
+<link href="../style.css" rel="stylesheet">
+<link href="../deck.js/core/print.css" media="print" rel="stylesheet">
+<script src="../deck.js/modernizr.custom.js"></script>
+</head>
+<body class="article">
+<div class="deck-container">
+<section class="slide" id="title-slide">
+<h1>Moduł 6b: JPA</h1>
+</section>
+<section class="slide" id="spis-treści">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li><strong>Mapowanie encji</strong></li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li>Dziedziczenie w JPA</li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="minimalne-mapowanie-jpa">
+<h2>Minimalne mapowanie JPA</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Ticket</span> {
+        <span class="annotation">@Id</span> <span class="directive">private</span> <span class="type">long</span> id;
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li><code>@javax.persistence.Entity</code> definiuje encję</li>
+<li><code>@javax.persistence.Id</code> definiuje prosty klucz główny</li>
+<li>Klucz główny będzie uzupełniany ręcznie</li>
+<li><code>@Id</code> można umieścić nad polem lub nad geterem – determinuje to mapowanie kolejnych pól w jeden wybrany sposób</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="modyfikacja-mapowań">
+<h2>Modyfikacja mapowań</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Ticket</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+        <span class="annotation">@Id</span>
+        <span class="directive">private</span> <span class="type">long</span> id;
+        <span class="directive">private</span> <span class="predefined-type">String</span> movieTitle;
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Klasa zostanie jest mapowana do tabeli ticket</li>
+<li>Pole id do kolumny id</li>
+<li>Pole price do kolumny price</li>
+<li>Pole movieTitle do kolumny movietitle</li>
+<li>Typ kolumn zależy od bazy danych i jest dobierany przez usługę EntityManager</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="modyfikacja-mapowań-2">
+<h2>Modyfikacja mapowań (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@Table</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">tickets</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Ticket</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+
+        <span class="annotation">@Id</span>
+        <span class="annotation">@Column</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">ticket_id</span><span class="delimiter">&quot;</span></span>)
+        <span class="directive">private</span> <span class="type">long</span> id;
+
+        <span class="annotation">@Column</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">movie_title</span><span class="delimiter">&quot;</span></span>)
+        <span class="directive">private</span> <span class="predefined-type">String</span> movieTitle;
+
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>Mapowania domyślne można zmodyfikować za pomocą adnotacji <code>@Column</code> i <code>@Table</code></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="adnotacja-table">
+<h2>Adnotacja @Table</h2>
+<div class="ulist">
+<div class="title">Atrybuty</div>
+<ul>
+<li><p>
+<strong>name</strong><div class="ulist">
+<ul>
+<li>Wskazuje nazwę tabeli w bazie danych</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>schema</strong><div class="ulist">
+<ul>
+<li>Wskazuje nazwę schematu</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>catalog</strong><div class="ulist">
+<ul>
+<li>Wskazuje nazwę katalogu, w którym położona jest tabela</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>uniqueConstraints</strong><div class="ulist">
+<ul>
+<li>Umożliwia nałożenie więzów unikalności na poszczególne kolumny</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="adnotacja-column">
+<h2>Adnotacja @Column</h2>
+<div class="ulist">
+<div class="title">Atrybuty</div>
+<ul>
+<li><p>
+name<div class="ulist">
+<ul>
+<li>Wskazuję nazwę kolumny w tabeli</li>
+</ul>
+</div></p></li>
+<li><p>
+unique<div class="ulist">
+<ul>
+<li>Wskazuje, czy na kolumnę ma być nałożone ograniczenie unikalności wartości</li>
+</ul>
+</div></p></li>
+<li><p>
+insertable<div class="ulist">
+<ul>
+<li>Określa, czy do kolumny mogą być wstawiane wartości</li>
+</ul>
+</div></p></li>
+<li><p>
+nullable<div class="ulist">
+<ul>
+<li>Określa, czy kolumna możne zawierać wartości null</li>
+</ul>
+</div></p></li>
+<li><p>
+updatable<div class="ulist">
+<ul>
+<li>Określa, czy wartości w kolumnie mogą być aktualizowane</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="adnotacja-column-2">
+<h2>Adnotacja @Column (2)</h2>
+<div class="ulist">
+<div class="title">Atrybuty</div>
+<ul>
+<li><p>
+length<div class="ulist">
+<ul>
+<li>Dla kolumn typu znakowego określa długość łańcucha</li>
+</ul>
+</div></p></li>
+<li><p>
+precision<div class="ulist">
+<ul>
+<li>Dla kolumn typu zmiennoprzecinkowego określa precyzję przechowywanych wartości</li>
+</ul>
+</div></p></li>
+<li><p>
+scale<div class="ulist">
+<ul>
+<li>Wskazuje dokładność dla wartości zmiennoprzecinkowych</li>
+</ul>
+</div></p></li>
+<li><p>
+columnDefinition<div class="ulist">
+<ul>
+<li>Część składni SQL odpowiedzialna za definicję kolumny, np.: wskazanie typu</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="klucz-główny">
+<h2>Klucz główny</h2>
+<div class="ulist">
+<ul>
+<li>Użycie adnotacji <code>@Id</code> dla pola zakłada, że programista sam nada wartość klucza głównego</li>
+<li><p>
+Można skorzystać z wartości generowanych automatycznie dodając adnotację <code>@GeneratedValue</code> i wybrać jedną z dostępnych strategii: AUTO, IDENTITY, SEQUENCE, TABLE<div class="ulist">
+<ul>
+<li>Dobór optymalnej strategii zależy od używanego silnika bazy danych</li>
+<li>Nie należy domniemywać że jest to konfiguracja niezależna od bazy danych (z wyjątkiem trybu <em>AUTO</em>)</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="klucz-główny-strategie">
+<h2>Klucz główny - strategie</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<strong>AUTO</strong> (domyślnie)<div class="ulist">
+<ul>
+<li>Usługa utrwalania decyduje o sposobie generowania kluczy na podstawie używanej bazy danych</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>IDENTITY</strong><div class="ulist">
+<ul>
+<li>Wymusza na bazie danych używanie specjalnego typu danych przeznaczonego tylko dla kluczy głównych</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>SEQUENCE</strong><div class="ulist">
+<ul>
+<li>Oznacza korzystanie z mechanizmu sekwencji, o ile baza danych udostępnia taki mechanizm</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>TABLE</strong><div class="ulist">
+<ul>
+<li>Usługa utrwalania korzystać będzie z dodatkowej tabeli, w celu wyznaczenia kolejnej wartości klucza</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="klucz-główny-sekwencje">
+<h2>Klucz główny - sekwencje</h2>
+<div class="ulist">
+<ul>
+<li>Korzystanie z sekwencji bazodanowej wymaga zdefiniowania generatora kluczy głównych związanego z tą sekwencją – adnotacja <code>@SequenceGenerator</code></li>
+<li>Zdefiniowany generator należy wskazać jako źródło kluczy głównych poprzez atrybut <code>@GeneratedValue.generator</code></li>
+<li><p>
+Atrybuty <code>@SequenceGenerator</code><div class="ulist">
+<ul>
+<li><em>name</em> - Nazwa generatora</li>
+<li><em>sequenceName</em> - Nazwa sekwencji w bazie danych skojarzonej z generatorem</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="klucz-główny-sekwencje-2">
+<h2>Klucz główny - sekwencje</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@Table</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">tickets</span><span class="delimiter">&quot;</span></span>)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Ticket</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+
+  <span class="annotation">@Id</span>
+  <span class="annotation">@GeneratedValue</span>(strategy=GenerationType.SEQUENCE,
+          generator=<span class="string"><span class="delimiter">&quot;</span><span class="content">ticketSequence</span><span class="delimiter">&quot;</span></span>)
+  <span class="annotation">@SequenceGenerator</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">ticketSequence</span><span class="delimiter">&quot;</span></span>,
+          sequenceName=<span class="string"><span class="delimiter">&quot;</span><span class="content">tickets_seq</span><span class="delimiter">&quot;</span></span>)
+  <span class="directive">private</span> <span class="type">long</span> id;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="złożony-klucz-główny">
+<h2>Złożony klucz główny</h2>
+<div class="ulist">
+<ul>
+<li>Specyfikacja JPA pozwala również definiować klucze złożone</li>
+<li>Klucz złożony wymaga osobnej klasy oznaczonej jako <code>@Embeddable</code></li>
+<li>Kolumny odpowiadające kluczowi złożonemu tworzone są w tabeli właściwej dla encji, która korzysta z tego klucza</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="złożony-klucz-główny-2">
+<h2>Złożony klucz główny</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Embeddable</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">UserPK</span> {
+        <span class="directive">private</span> <span class="predefined-type">String</span> name;
+        <span class="directive">private</span> <span class="predefined-type">String</span> surname;
+}
+
+<span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+        <span class="annotation">@EmbeddedId</span>
+        <span class="directive">private</span> UserPK id;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="temporal-i-enumerated">
+<h2>@Temporal i @Enumerated</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">enum</span> TicketType {
+        CHILD, ADULT
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Ticket</span> <span class="directive">implements</span> <span class="predefined-type">Serializable</span> {
+        <span class="annotation">@Id</span> <span class="annotation">@GeneratedValue</span>
+        <span class="directive">private</span> <span class="type">long</span> id;
+
+        <span class="annotation">@Temporal</span>(TemporalType.TIMESTAMP)
+        <span class="directive">private</span> <span class="predefined-type">Date</span> timeExpired;
+
+        <span class="annotation">@Enumerated</span>(EnumType.STRING)
+        <span class="directive">private</span> TicketType type;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="temporal-i-enumerated-2">
+<h2>@Temporal i @Enumerated</h2>
+<div class="ulist">
+<ul>
+<li><code>@Temporal</code> – wskazuje, za pomocą jakiego typu danych, będą zapamiętywane dane typów <code>java.util.Date</code> oraz <code>java.util.Calendar</code></li>
+<li><p>
+<code>@Enumerated</code> – mapuje pola typu wyliczeniowego:<div class="ulist">
+<ul>
+<li><p>
+<strong>STRING</strong><div class="ulist">
+<ul>
+<li>Wartości będą przechowywane w bazie w postaci łańcucha znaków</li>
+</ul>
+</div></p></li>
+<li><p>
+<strong>ORDINAL</strong><div class="ulist">
+<ul>
+<li>Wartości będą przechowywane w bazie w postaci liczby całkowitej, która odpowiada kolejności wyliczenia</li>
+</ul>
+</div></p></li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="adnotacja-transient">
+<h2>Adnotacja @Transient</h2>
+<div class="ulist">
+<ul>
+<li>Usługa utrwalania zakłada, że wszystkie właściwości klasy oznaczonej jako @Entity są odwzorowywane w bazie danych</li>
+<li>Aby wykluczyć właściwość z tej zasady, należy oznaczyć ją jako @Transient</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="spis-treści-2">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li><strong>Konfiguracja dostępu do bazy danych</strong></li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li>Dziedziczenie w JPA</li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="session-entitymanager">
+<h2>Session / EntityManager</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Hibernate Session / EntityManager<div class="ulist">
+<ul>
+<li>Jest pośrednikiem w komunikacji z bazą danych - Data Access Object</li>
+<li>Stanowi warstwę abstrakcji uniezależniającą aplikację od konkretnego źródła danych</li>
+<li>Zmiana źródła danych może się odbywać w sposób transparentny (przydatne w testach)</li>
+<li>Może stanowić podstawową implementację CRUD (Create, Retrieve, Update, Delete)</li>
+<li>Odpowiada za cykl życia encji</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="hibernate-session-xml">
+<h2>Hibernate Session - XML</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">mySessionFactory</span><span class="delimiter">&quot;</span></span>
+ <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">o.s.o.hibernate3.annotation.AnnotationSessionFactoryBean</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dataSource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dataSource</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">packagesToScan</span><span class="delimiter">&quot;</span></span>
+    <span class="attribute-name">value</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.dictionary.model</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+  <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">hibernateProperties</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;props&gt;</span>
+      <span class="tag">&lt;prop</span> <span class="attribute-name">key</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">hibernate.dialect</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        org.hibernate.dialect.MysqlDialect
+      <span class="tag">&lt;/prop&gt;</span>
+    <span class="tag">&lt;/props&gt;</span>
+  <span class="tag">&lt;/property&gt;</span>
+<span class="tag">&lt;/bean&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="hibernate-session-java">
+<h2>Hibernate Session - Java</h2>
+<div class="listingblock">
+<div class="title">Hibernate3 configuration</div>
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Bean</span>
+<span class="directive">public</span> AnnotationSessionFactoryBean session(<span class="predefined-type">DataSource</span> ds) {
+  AnnotationSessionFactoryBean session =
+    <span class="keyword">new</span> AnnotationSessionFactoryBean();
+  session.setDataSource(ds);
+  session.setPackagesToScan(<span class="keyword">new</span> <span class="predefined-type">String</span><span class="type">[]</span>
+          {<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.dictionary.model</span><span class="delimiter">&quot;</span></span>});
+
+  <span class="predefined-type">Properties</span> props = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+  props.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">hibernate.dialect</span><span class="delimiter">&quot;</span></span>,
+          MySQLDialect.class.getName());
+  session.setHibernateProperties(props);
+  <span class="keyword">return</span> session;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="hibernate-session-java-2">
+<h2>Hibernate Session - Java</h2>
+<div class="listingblock">
+<div class="title">Hibernate4 configuration</div>
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Bean</span>
+<span class="directive">public</span> LocalSessionFactoryBean session(<span class="predefined-type">DataSource</span> datasource) {
+  LocalSessionFactoryBean session =
+    <span class="keyword">new</span> LocalSessionFactoryBean();
+  session.setDataSource(datasource);
+  session.setPackagesToScan(<span class="keyword">new</span> <span class="predefined-type">String</span><span class="type">[]</span>
+          {<span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.dictionary.model</span><span class="delimiter">&quot;</span></span>});
+
+  <span class="predefined-type">Properties</span> props = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+  props.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">hibernate.dialect</span><span class="delimiter">&quot;</span></span>,
+          MySQLDialect.class.getName());
+  session.setHibernateProperties(props);
+  <span class="keyword">return</span> session;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="entitymanager">
+<h2>EntityManager</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Bean</span>
+<span class="directive">public</span> LocalContainerEntityManagerFactoryBean
+    entityManagerFactory(<span class="predefined-type">DataSource</span> ds) {
+      LocalContainerEntityManagerFactoryBean emf = <span class="keyword">new</span>
+        LocalContainerEntityManagerFactoryBean();
+      emf.setDataSource(ds);
+      <span class="keyword">return</span> emf;
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">entityManagerFactory</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">o.s.o.jpa.LocalContainerEntityManagerFactoryBean</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dataSource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dataSource</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/bean&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="entitymanager-2">
+<h2>EntityManager</h2>
+<div class="listingblock">
+<div class="title">persistence.xml</div>
+<div class="content">
+<pre class="CodeRay nowrap"><code class="xml language-xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;persistence</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://java.sun.com/xml/ns/persistence</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd</span><span class="delimiter">&quot;</span></span>
+  <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">2.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+    <span class="tag">&lt;persistence-unit</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">pu</span><span class="delimiter">&quot;</span></span>
+      <span class="attribute-name">transaction-type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">RESOURCE_LOCAL</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;provider&gt;</span>org.hibernate.ejb.HibernatePersistence<span class="tag">&lt;/provider&gt;</span>
+    <span class="tag">&lt;/persistence-unit&gt;</span>
+
+<span class="tag">&lt;/persistence&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="atrybuty-hibernate-session">
+<h2>Atrybuty Hibernate Session</h2>
+<div class="ulist">
+<ul>
+<li>hibernate.dialect - wskazuje dialekt SQL, w którym będą generowane zapytania: Oracle, MySQL, MsSQL</li>
+<li>hibernate.show_sql - pokazuje kwerendy SQL generowane przez Hibernate’a</li>
+<li>hibernate.format_sql - czytelnie formatuje wygenerowane kwerendy</li>
+<li><p>
+hibernate.hbm2ddl.auto – sposób traktowania schematu bazy danych.<div class="ulist">
+<ul>
+<li>validate</li>
+<li>update</li>
+<li>create</li>
+<li>create-drop</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="dostęp-do-danych">
+<h2>Dostęp do danych</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">class</span> <span class="class">HibernateRepository</span> {
+
+  <span class="annotation">@Autowired</span>
+  SessionFactory mySessionFactory;
+
+  <span class="directive">public</span> DictionaryWord getSavedWords() {
+    <span class="keyword">return</span> mySessionFactory
+             .openSession()
+             .get(DictionaryWord.class, <span class="integer">1l</span>);
+  }
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="dostęp-do-danych-2">
+<h2>Dostęp do danych</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">class</span> <span class="class">JpaRepository</span> {
+
+        <span class="annotation">@PersistenceContext</span>
+        EntityManager em;
+
+        <span class="directive">public</span> DictionaryWord getSavedWords() {
+                <span class="keyword">return</span> em.find(DictionaryWord.class, <span class="integer">1l</span>)
+        }
+
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="spis-treści-3">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li><strong>Cykl życia obiektów w bazie danych</strong></li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li>Dziedziczenie w JPA</li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="cykl-życia-encji">
+<h2>Cykl życia encji</h2>
+<div class="ulist">
+<ul>
+<li><strong>persist()</strong> - powoduje dodanie encji do kontekstu utrwalania. Encje tworzymy za pomocą new – tak jak wszystkie inne obiekty w Javie</li>
+<li><strong>save()</strong> / <strong>saveOrUpdate()</strong> - dla Hibernate Session</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img alt="100000000000028C00000102B8B79203" src="../images/100000000000028C00000102B8B79203.png">
+</div>
+</div>
+</section>
+<section class="slide" id="cykl-życia-encji-2">
+<h2>Cykl życia encji (2)</h2>
+<div class="ulist">
+<ul>
+<li><strong>get()</strong>, <strong>load()</strong> - pobiera encje z kontekstu na podstawie identyfikatora (dla Hibernate Session)</li>
+<li><strong>find()</strong>, <strong>getReference()</strong> – w przypadku EntityManager</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img alt="100000000000028C00000102F4E99199" src="../images/100000000000028C00000102F4E99199.png">
+</div>
+</div>
+</section>
+<section class="slide" id="cykl-życia-encji-3">
+<h2>Cykl życia encji (3)</h2>
+<div class="ulist">
+<ul>
+<li><strong>delete()</strong> - usuwa encję z kontekstu (Hibernate Session)</li>
+<li><strong>remove()</strong> – metoda EntityManagera</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img alt="100000000000028C00000102C1F21813" src="../images/100000000000028C00000102C1F21813.png">
+</div>
+</div>
+</section>
+<section class="slide" id="cykl-życia-encji-4">
+<h2>Cykl życia encji (4)</h2>
+<div class="ulist">
+<ul>
+<li><strong>clear()</strong> – odłącza, od kontekstu utrwalania wszystkie zarządzane encje</li>
+<li><strong>Object merge(entity)</strong> - przyłącza odłączoną encje do kontekst</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img alt="100000000000028C0000010214D1B7B8" src="../images/100000000000028C0000010214D1B7B8.png">
+</div>
+</div>
+</section>
+<section class="slide" id="obiekty-detached">
+<h2>Obiekty detached</h2>
+<div class="ulist">
+<ul>
+<li>Były zarządzane przez sesję lecz zostały odłączone (lub sesja została zamknięta)</li>
+<li>Obiekt typu detached może zostać ponownie dołączony do kontekstu</li>
+<li>Wszystkie modyfikacje mogą zostać z powodzeniem zapisane do bazy danych w późniejszym etapie</li>
+<li>Praca z obiektem nie wymaga otwartego połączenie do bazy danych</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="spis-treści-4">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+<strong>Budowanie zapytań w JPA</strong><div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li>Dziedziczenie w JPA</li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="jpql">
+<h2>JPQL</h2>
+<div class="ulist">
+<ul>
+<li>Język zapytań JPA</li>
+<li>Analogiczny do języka SQL jednak nie zależny od konkretnego typu bazy danych</li>
+<li><p>
+Umożliwia elastyczniejsze pobieranie danych niż metoda entityManager.find()<div class="ulist">
+<ul>
+<li>filtrowanie</li>
+<li>sortowanie</li>
+<li>grupowanie</li>
+<li>agregacja</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="jpql-2">
+<h2>JPQL (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="predefined-type">Query</span> query = entityManager
+        .createQuery(<span class="string"><span class="delimiter">&quot;</span><span class="content">wyrażenie JPQL</span><span class="delimiter">&quot;</span></span>);
+
+<span class="predefined-type">Object</span> single = query.getSingleResult();
+<span class="predefined-type">List</span> list = query.getResultList();</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jpql-operatory">
+<h2>JPQL - operatory</h2>
+<div class="ulist">
+<ul>
+<li>operatory logiczne (równość, większy, mniejszy, różny od)</li>
+<li>AND, OR, NOT</li>
+<li>operatory matematyczne (plus, minus, iloczyn, iloraz, inkrementacja i dekrementacji)</li>
+<li>. (kropka) - operator nawigacji; zależności od zagłębionych encji</li>
+<li>LIKE; dopasowanie wyrażenia znakowego do wzorce</li>
+<li>BETWEEN</li>
+<li>IN; sprawdzenie czy wartość znajduje się w tablicy</li>
+<li>IS NULL, IS EMPTY</li>
+<li>MEMBER OF; sprawdzenie czy parametr jest elementem kolekcji</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="jpql-operatory-2">
+<h2>JPQL – operatory (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="text language-text">SELECT p FROM Person p
+from Person where firstName = 'Jakub' and lastName is null
+from Person where address.city = 'Gdansk'
+from Person where firstName LIKE 'Ja%' from Person where firstName IN ('Jakub', 'Jan')
+from Person where 'Jakub' MEMBEROF names`</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jpql-funkcje">
+<h2>JPQL - funkcje</h2>
+<div class="ulist">
+<ul>
+<li><em>lower</em> - zamiana liter na małe</li>
+<li><em>upper</em> - zamiana liter na wielkie</li>
+<li><em>trim</em> - usunięcie spacji</li>
+<li><em>concat</em> - połączenie dwóch łańcuchów znaków</li>
+<li><em>length</em> - zwraca długość łańcucha znaków</li>
+<li><em>locate</em> - zwraca pozycję jednego łańcucha w drugim</li>
+<li><em>substring</em> - zwraca podłańcuch o określonej długości</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="jpql-funkcje-2">
+<h2>JPQL – funkcje (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="text language-text">from Person where UPPER(firstName) = 'JAKUB'
+from Person where LENGTH(address.city) = 5
+from Person where CONCAT(firstName, 'NAME') = 'JakubNAME'</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jpql-grupowanie">
+<h2>JPQL – grupowanie</h2>
+<div class="ulist">
+<ul>
+<li><em>count</em> - zlicza ilość elementy w zbiorze</li>
+<li><em>max</em>, <em>min</em> - maksymalna/minimalna wartość</li>
+<li><em>sum</em> - suma wartości wszystkich pól numerycznych wskazanych przez wyrażenie</li>
+<li><em>avg</em> - oblicza średnią z wartości pola numerycznego</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="jpql-grupowanie-2">
+<h2>JPQL – grupowanie (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="text language-text">SELECT COUNT(p) FROM Person p
+SELECT MAX(p.age) FROM Person p
+SELECT AVG(p.age) FROM Person p</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jpql-parametry">
+<h2>JPQL – parametry</h2>
+<div class="ulist">
+<ul>
+<li>parametry nazwane</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">Person person = entityManager
+  .createQuery(<span class="string"><span class="delimiter">&quot;</span><span class="content">from Person where firstName = ?1</span><span class="delimiter">&quot;</span></span>, Person.class)
+  .setParameter(<span class="integer">1</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jakub</span><span class="delimiter">&quot;</span></span>)
+  .getSingleResult();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">Person person = entityManager
+  .createQuery(<span class="string"><span class="delimiter">&quot;</span><span class="content">from Person where firstName = :name</span><span class="delimiter">&quot;</span></span>,
+          Person.class)
+  .setParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jakub</span><span class="delimiter">&quot;</span></span>)
+  .getSingleResult();</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jpql-dto">
+<h2>JPQL – DTO</h2>
+<div class="ulist">
+<ul>
+<li><em>Data Transfer Object</em> – struktura utworzona do przeniesienia danych</li>
+<li>JPQL umożliwia pobranie tylko niektórych elementów z encji</li>
+<li>JPA zwraca wtedy tablice typu Object[]</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="text language-text">Object[][] results = entityManager
+  .createQuery(&quot;SELECT p.firstname, p.lastname FROM Person p&quot;)
+  .getResultList()</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jpql-dto-2">
+<h2>JPQL – DTO (2)</h2>
+<div class="ulist">
+<ul>
+<li>Wykorzystanie DTO zwiększa czytelność kodu</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">class</span> <span class="class">NameDTO</span> {
+        <span class="directive">private</span> <span class="predefined-type">String</span> firstName;
+        <span class="directive">private</span> <span class="predefined-type">String</span> lastName;
+
+        <span class="directive">public</span> NameDTO(<span class="predefined-type">String</span> firstName, <span class="predefined-type">String</span> lastName) {
+                <span class="local-variable">this</span>.firstName = firstName;
+                <span class="local-variable">this</span>.lastName = lastName;
+        }<span class="error"> </span>
+
+        <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="jpql-dto-3">
+<h2>JPQL – DTO (3)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">NameDTO name = (NameDTO) entityManager
+    .createQuery(<span class="string"><span class="delimiter">&quot;</span><span class="content">select new </span><span class="delimiter">&quot;</span></span> +
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">com.example.spring.NameDTO(p.firstName, p.lastName) </span><span class="delimiter">&quot;</span></span> +
+        <span class="string"><span class="delimiter">&quot;</span><span class="content">from Person p</span><span class="delimiter">&quot;</span></span>)
+    .getSingleResult();
+
+<span class="predefined-type">System</span>.out.println(name.getFirstName() +
+    <span class="string"><span class="delimiter">&quot;</span><span class="content">, </span><span class="delimiter">&quot;</span></span> + name.getLastName());</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="zapytania-nazwane">
+<h2>Zapytania nazwane</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@NamedQueries</span>({
+    <span class="annotation">@NamedQuery</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">User.findAll</span><span class="delimiter">&quot;</span></span>, query=<span class="string"><span class="delimiter">&quot;</span><span class="content">from User</span><span class="delimiter">&quot;</span></span>), <b class="conum">(1)</b>
+    <span class="annotation">@NamedQuery</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">User.findById</span><span class="delimiter">&quot;</span></span>,
+            query=<span class="string"><span class="delimiter">&quot;</span><span class="content">from User u where u.id = :userId</span><span class="delimiter">&quot;</span></span>)
+})
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+        <span class="comment">//...</span>
+}
+
+<span class="predefined-type">Query</span> query = em.createNamedQuery(<span class="string"><span class="delimiter">&quot;</span><span class="content">User.findById</span><span class="delimiter">&quot;</span></span>);
+query.setParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">userId</span><span class="delimiter">&quot;</span></span>, <span class="integer">1001L</span>);
+
+User user = (User) query.getSingleResult();</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Nazwy zapytań są globalne w obrębie jednostki utrwalania</p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="criteria-api">
+<h2>Criteria API</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Alternatywa wobec JPQL<div class="ulist">
+<ul>
+<li>Początkowo dostępna tylko w Hibernate</li>
+<li>Od JEE6 jest elementem standardu JPA 2</li>
+</ul>
+</div></p></li>
+<li>Criteria to obiektowa reprezentacja zapytania dotyczącego konkretnej encji</li>
+<li><p>
+Umożliwia stopniowe budowanie dynamicznych zapytań<div class="ulist">
+<ul>
+<li>Z zachowaniem czytelności</li>
+<li>Z wygodnym Fluent API</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="criteria-api-2">
+<h2>Criteria API</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="predefined-type">List</span> cats = sess.createCriteria(Cat.class)
+        .add( Restrictions.like(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Fritz%</span><span class="delimiter">&quot;</span></span>) )
+        .add( Restrictions
+                .between(<span class="string"><span class="delimiter">&quot;</span><span class="content">weight</span><span class="delimiter">&quot;</span></span>, minWeight, maxWeight) )
+        .list();</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="criteria-api-operatory">
+<h2>Criteria API - operatory</h2>
+<div class="ulist">
+<ul>
+<li>operatory logiczne (równość, większy, mniejszy, różny od)</li>
+<li>AND, OR, NOT</li>
+<li>. (kropka) - operator nawigacji; zależności od zagłębionych encji</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">Restrictions.gt(<span class="string"><span class="delimiter">&quot;</span><span class="content">age</span><span class="delimiter">&quot;</span></span>, <span class="integer">19</span>)
+Restrictions.eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Fritz</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">Criteria.add(Restrictions.or (
+Restrictions.like(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Fritz%</span><span class="delimiter">&quot;</span></span>),
+Restrictions.isNull(<span class="string"><span class="delimiter">&quot;</span><span class="content">weight</span><span class="delimiter">&quot;</span></span>) ) )</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">Restrictions.eq(<span class="string"><span class="delimiter">&quot;</span><span class="content">name.firstName</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">Fritz</span><span class="delimiter">&quot;</span></span>)</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="criteria-api-grupowanie">
+<h2>Criteria API - grupowanie</h2>
+<div class="ulist">
+<ul>
+<li><em>count</em> - zlicza ilość elementy w zbiorze</li>
+<li><em>max</em>, <em>min</em> - maksymalna/minimalna wartość</li>
+<li><em>sum</em> - suma wartości wszystkich pól numerycznych wskazanych przez wyrażenie</li>
+<li><em>avg</em> - oblicza średnią z wartości pola numerycznego</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="predefined-type">List</span> results = session.createCriteria(Cat.class)
+        .setProjection( Projections.projectionList()
+        .add( Projections.rowCount() )
+        .add( Projections.avg(<span class="string"><span class="delimiter">&quot;</span><span class="content">weight</span><span class="delimiter">&quot;</span></span>) )
+        .add( Projections.max(<span class="string"><span class="delimiter">&quot;</span><span class="content">weight</span><span class="delimiter">&quot;</span></span>) )
+        .add( Projections.groupProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">color</span><span class="delimiter">&quot;</span></span>) )
+).list();</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="criteria-api-example-query">
+<h2>Criteria API – example query</h2>
+<div class="ulist">
+<ul>
+<li>Umożliwia zapytania poprzez przykłady</li>
+<li>Klasa Example umożliwia uogólnianie przykładowego obiektu</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">session.createCriteria(Cat.class)
+        .add( Example.create(cat) )
+        .list();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">Example.create(cat)
+        .excludeNone()
+        .excludeProperty(<span class="string"><span class="delimiter">&quot;</span><span class="content">weight</span><span class="delimiter">&quot;</span></span>)
+        .ignoreCase()
+        .enableLike();</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="criteria-api-problemy">
+<h2>Criteria API – problemy</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Wydajność zapytania<div class="ulist">
+<ul>
+<li>JPQL (HQL) daje pewne możliwości kontroli zapytania (optymalizacja)</li>
+<li>Criteria API to pełna wiara w potęgę Hibernate</li>
+</ul>
+</div></p></li>
+<li><p>
+Wydajność aplikacji<div class="ulist">
+<ul>
+<li>Zapytania nazwane można z łatwością cache’ować</li>
+</ul>
+</div></p></li>
+<li><p>
+Utrzymanie<div class="ulist">
+<ul>
+<li>Zapytania zostają pownownie rozrzucone po kodzie aplikacji</li>
+<li>Zapytania nazwane zawsze zgromadzone w jednym miejscu</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="spis-treści-5">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li><strong>Wsparcie dla transakcji</strong></li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li>Dziedziczenie w JPA</li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="założenia-transakcyjności">
+<h2>Założenia transakcyjności</h2>
+<div class="ulist">
+<ul>
+<li><strong>atomowość</strong> – niepodzielność, udaje się w całości albo wcale</li>
+<li><strong>spójność</strong> – nie narusza integralności danych</li>
+<li><strong>izolacja</strong> – równolegle transakcje nie widzą zmian przez siebie wprowadzanych</li>
+<li><strong>trwałość</strong> – w przypadku awarii, system jest w stanie udostępnić spójne i nienaruszone dane, niezależnie od momentu w którym transakcja została przerwana.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="transakcja-aplikacji">
+<h2>Transakcja aplikacji</h2>
+<div class="ulist">
+<ul>
+<li>Służą do łączenia kilku operacji i uzależniają końcowy wynik przetwarzania od powodzenia wszystkich operacji objętych transakcją</li>
+<li>Nie muszą dotyczyć tylko operacji bazodanowych</li>
+<li>Gwarantują spójność wykonywanych operacji</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="konfiguracja-transakcji">
+<h2>Konfiguracja transakcji</h2>
+<div class="ulist">
+<ul>
+<li>Spring umożliwia automatyczną konfigurację transakcji</li>
+<li>Łączy transakcję z odpowiednim źródłem danych</li>
+<li>Umożliwia zarządzanie transakcjami bezpośrednio w kodzie (poprzez adnotację <code>@Transactional</code>)</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="xml language-xml"><span class="tag">&lt;tx:annotation-driven</span> <span class="attribute-name">transaction-manager</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">txManager</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+ 
+<span class="tag">&lt;bean</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">txManager</span><span class="delimiter">&quot;</span></span>
+<span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">o.s.jdbc.datasource.DataSourceTransactionManager</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;property</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dataSource</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">ref</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dataSource</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;/bean&gt;</span></code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="konfiguracja-transakcji-2">
+<h2>Konfiguracja transakcji (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Configuration</span>
+<span class="annotation">@EnableTransactionManagement</span>
+<span class="directive">public</span> <span class="directive">static</span> <span class="type">class</span> <span class="class">AppConfiguration</span> {
+  <span class="annotation">@Bean</span>
+  <span class="directive">public</span> AnnotationSessionFactoryBean session(<span class="predefined-type">DataSource</span> ds) {
+    <span class="comment">//..</span>
+  }
+  <span class="annotation">@Bean</span>
+  <span class="directive">public</span> HibernateTransactionManager tx(SessionFactory sf) {
+    HibernateTransactionManager tx =
+      <span class="keyword">new</span> HibernateTransactionManager();
+    tx.setSessionFactory(factory);
+    <span class="keyword">return</span> tx;
+  }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="transaction-manager">
+<h2>Transaction Manager</h2>
+<div class="ulist">
+<ul>
+<li>Sprawdza czy istnieje aktywna transakcja</li>
+<li>Zarządza zasięgiem transakcji (propagation)</li>
+<li>Zawiesza i wznawia transakcje w zależności od potrzeb</li>
+<li>Sprawdza flagę rollback-only w przypadku zakończenia transakcji</li>
+<li>Odpowiada za wszelkie modyfikację w przypadku nawrotu transakcji</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="adnotacja-transactional">
+<h2>Adnotacja @Transactional</h2>
+<div class="ulist">
+<ul>
+<li>Zastosowana na poziomie metody obejmuje ją transakcją.</li>
+<li><p>
+Umożliwia szczegółową konfigurację poprzez szereg atrybutów:<div class="ulist">
+<ul>
+<li><em>value</em>: manager transakcji który ma zostać użyty</li>
+<li><em>propagation</em>: typ transakcji</li>
+<li><em>isolation</em>: poziom izolacji transakcji</li>
+<li><em>readOnly</em>: transakcja tylko odczytująca czy obejmuje zarówno operacje odczytu jak i zapisu</li>
+<li><em>timeout</em>: maksymalny czas trwania transakcji (w sekundach)</li>
+<li><em>rollback</em> / <em>noRollback</em>: wyjątki powodujące wycofanie (lub nie) transakcji</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="adnotacja-transactional-2">
+<h2>Adnotacja @Transactional</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Transactional</span>(propagation=Propagation.REQUIRED,
+  isolation=Isolation.DEFAULT,
+  timeout=-<span class="integer">1</span>,
+  readOnly=<span class="predefined-constant">false</span>)</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="typy-transakcji">
+<h2>Typy transakcji</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<strong>REQUIRED</strong> - operacja zawsze będzie objęta transakcją<div class="ulist">
+<ul>
+<li>nowo utworzona transakcja</li>
+<li>Wykorzystanie już istniejąca transakcji</li>
+</ul>
+</div></p></li>
+<li><strong>NOT_SUPPORTED</strong> - klient nie obsługuje transakcji; istniejąca transakcja jest zawieszana</li>
+<li><p>
+<strong>SUPPORTS</strong> - poprawne zachowanie zarówno z jak i bez transakcji.<div class="ulist">
+<ul>
+<li>równoznaczne atrybutowi <em>REQUIRED</em> – w przypadku istnienia transakcji</li>
+<li>równoznaczne <em>NOT_SUPPORTED</em> – w przypadku braku transakcji</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="typy-transakcji-2">
+<h2>Typy transakcji (2)</h2>
+<div class="ulist">
+<ul>
+<li><strong>REQUIRES_NEW</strong> –dla każdego wywołania metody tworzona jest nowa transakcja.</li>
+<li><strong>MANDATORY</strong> – w trakcie wywołania metody transakcja musi być aktywna.</li>
+<li><strong>NEVER</strong> - metoda nie może być wywołana w obrębie transakcji</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="transakcje-typu-nested">
+<h2>Transakcje typu NESTED</h2>
+<div class="ulist">
+<ul>
+<li>Typy wprowadzony w Spring Framework – typ nie mający odpowiednika w EJB</li>
+<li>utworzenie zagnieżdżonej transakcji, z wieloma punktami zapisu (ang. <em>save points</em>)</li>
+<li>Wymaga źródła danych zgodnego z JDBC 3.0</li>
+<li>Pozwala na częściowe nawrócenie transakcji (ang. <em>rollback</em>) do najbliższego wewnętrznego punktu zapisu</li>
+<li>Mimo nawrotu transakcja wciąż jest aktywna i działająca.</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="spis-treści-6">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li><strong>Mapowanie relacji po stronie bazy danych</strong></li>
+<li>Dziedziczenie w JPA</li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="wiele-obiektów-jedna-tabela">
+<h2>Wiele obiektów - jedna tabela</h2>
+<div class="ulist">
+<ul>
+<li>Jeśli tabela przechowuje dane, które należy rozdzielić pomiędzy wiele obiektów, można do tego celu użyć adnotacji <code>@Embedded</code> oraz <code>@Embeddable</code></li>
+<li>Pola klasy osadzonej zostaną zmapowane do tabeli związanej z klasą-właścicielem</li>
+</ul>
+</div>
+<div class="ulist">
+<div class="title">Kiedy używamy</div>
+<ul>
+<li>Zdenormalizowany model po stronie bazy danych mapujemy na mniejsze obiekty</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="wiele-obiektów-jedna-tabela-2">
+<h2>Wiele obiektów - jedna tabela</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Embeddable</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+        <span class="directive">private</span> <span class="predefined-type">String</span> city;
+        <span class="directive">private</span> <span class="predefined-type">String</span> street;
+        <span class="directive">private</span> <span class="predefined-type">String</span> postalCode;
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+        <span class="annotation">@Id</span>
+        <span class="directive">private</span> <span class="type">long</span> id;
+        <span class="annotation">@Embedded</span>
+        <span class="directive">private</span> Address address;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="wiele-obiektów-jedna-tabela-3">
+<h2>Wiele obiektów - jedna tabela</h2>
+<div class="ulist">
+<ul>
+<li>Nazwy kolumn odpowiadających właściwościom obiektu osadzanego można zdefiniować za pomocą adnotacji <code>@Column</code></li>
+<li>Nazwy te można przedefiniować przy pomocy adnotacji <code>@AttributeOvveride</code> w encji-właścicielu</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="wiele-obiektów-jedna-tabela-4">
+<h2>Wiele obiektów - jedna tabela</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Embeddable</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+        <span class="directive">private</span> <span class="predefined-type">String</span> street;
+
+        <span class="annotation">@Column</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">postal_code</span><span class="delimiter">&quot;</span></span>)
+        <span class="directive">private</span> <span class="predefined-type">String</span> postalCode;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="wiele-obiektów-jedna-tabela-5">
+<h2>Wiele obiektów - jedna tabela</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+
+  <span class="annotation">@Embedded</span>
+  <span class="annotation">@AttributeOverrides</span> ({
+    <span class="annotation">@AttributeOverride</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">postalCode</span><span class="delimiter">&quot;</span></span>,
+      column=<span class="annotation">@Column</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">user_postal</span><span class="delimiter">&quot;</span></span>)),
+    <span class="annotation">@AttributeOverride</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">street</span><span class="delimiter">&quot;</span></span>,
+      column=<span class="annotation">@Column</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">basic_street</span><span class="delimiter">&quot;</span></span>))
+    })
+  <span class="directive">private</span> Address address;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="encja-z-wielu-tabel">
+<h2>Encja z wielu tabel</h2>
+<div class="ulist">
+<ul>
+<li>Jeśli dane przechowywane w encji mają pochodzić z wielu tabel należy posłużyć się adnotacją <code>@SecondaryTable</code> do zadeklarowania dodatkowej tabeli</li>
+<li>Właściwości pochodzące z inne tabeli wskazywane są atrybutem <code>@Column.table</code></li>
+<li>Jeśli zachodzi konieczność zadeklarowania więcej niż jednej dodatkowej tabeli, należy adnotację <code>@SecondaryTable</code> umieścić w <code>@SecondaryTables</code></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="encja-z-wielu-tabel-2">
+<h2>Encja z wielu tabel</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@SecondaryTable</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">addresses</span><span class="delimiter">&quot;</span></span>,
+        pkJoinColumns=<span class="annotation">@PrimaryKeyJoinColumn</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span>) <b class="conum">(1)</b>
+        )
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+        <span class="annotation">@Column</span>(table=<span class="string"><span class="delimiter">&quot;</span><span class="content">addresses</span><span class="delimiter">&quot;</span></span>, name=<span class="string"><span class="delimiter">&quot;</span><span class="content">street</span><span class="delimiter">&quot;</span></span>)
+        <span class="directive">private</span> <span class="predefined-type">String</span> street;
+
+        <span class="annotation">@Column</span>(table=<span class="string"><span class="delimiter">&quot;</span><span class="content">addresses</span><span class="delimiter">&quot;</span></span>, name=<span class="string"><span class="delimiter">&quot;</span><span class="content">city</span><span class="delimiter">&quot;</span></span>)
+        <span class="directive">private</span> <span class="predefined-type">String</span> city;
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Łączenie następuję po kluczu głównym w tabeli - nie nadaje się do pobierania danych słownikowych</p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="encja-z-wielu-tabel-2-2">
+<h2>Encja z wielu tabel (2)</h2>
+<div class="ulist">
+<div class="title">Atrybuty <code>@SecondaryTable</code></div>
+<ul>
+<li><p>
+<em>name</em><div class="ulist">
+<ul>
+<li>Nazwa dodatkowej tabeli</li>
+</ul>
+</div></p></li>
+<li><p>
+<em>pkJoinColumns</em><div class="ulist">
+<ul>
+<li>Zestaw adnotacji <code>@PrimaryKeyJoinColumns</code> wskazujących kolumny z dodatkowej tabeli, w względem których ma nastąpić złączenie z tabelą bazową; zazwyczaj jest to klucz główny</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="encja-z-wielu-tabel-3">
+<h2>Encja z wielu tabel (3)</h2>
+<div class="ulist">
+<div class="title">Atrybuty <code>@PrimaryKeyJoinColumns</code></div>
+<ul>
+<li><p>
+<em>name</em><div class="ulist">
+<ul>
+<li>Nazwa kolumny w tabeli dodatkowej, względem której nastąpi złączenie</li>
+</ul>
+</div></p></li>
+<li><p>
+<em>referencedColumnName</em><div class="ulist">
+<ul>
+<li>Nazwa kolumny w tabeli głównej, względem której nastąpi złączenie; domyślnie jest to klucz główny</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="relacje-pomiędzy-obiektami">
+<h2>Relacje pomiędzy obiektami</h2>
+<div class="ulist">
+<div class="title">Typy relacji pomiędzy obiektami</div>
+<ul>
+<li>Jeden – do – jednego <code>@OneToOne</code></li>
+<li>Wiele – do – jednego <code>@ManyToOne</code></li>
+<li>Jeden – do – wielu <code>@OneToMany</code></li>
+<li>Wiele – do – wielu <code>@ManyToMany</code></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="jeden-do-jednego">
+<h2>Jeden do jednego</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:50%">
+<col style="width:50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@OneToOne</span>
+  <span class="directive">private</span> Address address;
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> addressId;
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="one to one mapping" height="123" src="../images/one-to-one-mapping.png" width="320">
+</div>
+</div>
+</section>
+<section class="slide" id="jeden-do-jednego-2">
+<h2>Jeden do jednego (2)</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:60%">
+<col style="width:40%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@OneToOne</span>
+  <span class="annotation">@JoinColumn</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">ADDRESS_ID</span><span class="delimiter">&quot;</span></span>)
+  <span class="directive">private</span> Address address;
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> addressId;
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="one to one joincolumn mapping" height="123" src="../images/one-to-one-joincolumn-mapping.png" width="262">
+</div>
+</div>
+</section>
+<section class="slide" id="jeden-do-jednego-3">
+<h2>Jeden do jednego (3)</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:60%">
+<col style="width:40%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@OneToOne</span>
+  <span class="directive">private</span> Address address;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> addressId;
+
+  <span class="annotation">@OneToOne</span>
+  <span class="directive">private</span> Person person;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="one to one twoway" height="136" src="../images/one-to-one-twoway.png" width="372">
+</div>
+</div>
+</section>
+<section class="slide" id="jeden-do-jednego-4">
+<h2>Jeden do jednego (4)</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:40%">
+<col style="width:60%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@OneToOne</span>
+  <span class="directive">private</span> Address address;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> addressId;
+
+  <span class="annotation">@OneToOne</span>(mappedBy = <span class="string"><span class="delimiter">&quot;</span><span class="content">address</span><span class="delimiter">&quot;</span></span>)
+  <span class="directive">private</span> Person person;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="one to one twoway" height="123" src="../images/one-to-one-twoway.png" width="320">
+</div>
+</div>
+</section>
+<section class="slide" id="wiele-do-jednego">
+<h2>Wiele do jednego</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:50%">
+<col style="width:50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+  <span class="directive">private</span> <span class="predefined-type">String</span> firstName;
+  <span class="directive">private</span> <span class="predefined-type">String</span> lastName;
+  <span class="directive">private</span> <span class="predefined-type">String</span> nickName;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Phone</span>{
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> phoneId;
+  <span class="directive">private</span> <span class="predefined-type">String</span> number;
+  <span class="directive">private</span> <span class="predefined-type">String</span> extension;
+  <span class="annotation">@ManyToOne</span>
+  <span class="directive">private</span> Person person;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="many to one" height="110" src="../images/many-to-one.png" width="300">
+</div>
+</div>
+</section>
+<section class="slide" id="jeden-do-wielu">
+<h2>Jeden do wielu</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:50%">
+<col style="width:50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@OneToMany</span>
+  <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Phone&gt; phones;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Phone</span>{
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> phoneId;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="many to one twoway" height="110" src="../images/many-to-one-twoway.png" width="416">
+</div>
+</div>
+</section>
+<section class="slide" id="jeden-do-wielu-2">
+<h2>Jeden do wielu (2)</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:60%">
+<col style="width:40%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+ <span class="annotation">@Id</span>
+ <span class="directive">private</span> <span class="type">long</span> personId;
+ <span class="annotation">@OneToMany</span>
+ <span class="annotation">@JoinTable</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">PERSON_CONTACT_DATA</span><span class="delimiter">&quot;</span></span>,
+   joinColumns =
+     <span class="annotation">@JoinColumn</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">PERSON_ID</span><span class="delimiter">&quot;</span></span>),
+   inverseJoinColumns =
+     <span class="annotation">@JoinColumn</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">PHONE_ID</span><span class="delimiter">&quot;</span></span>))
+ <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Phone&gt; phones;
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Phone</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> phoneId;
+  <span class="directive">private</span> <span class="predefined-type">String</span> number;
+  <span class="directive">private</span> <span class="predefined-type">String</span> ext;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="many to one jointable" height="110" src="../images/many-to-one-jointable.png" width="435">
+</div>
+</div>
+</section>
+<section class="slide" id="jeden-do-wielu-3">
+<h2>Jeden do wielu (3)</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:50%">
+<col style="width:50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@OneToMany</span>(mappedBy=<span class="string"><span class="delimiter">&quot;</span><span class="content">person</span><span class="delimiter">&quot;</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">List</span>&lt;Phone&gt; phones;
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Phone</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> phoneId;
+
+  <span class="annotation">@ManyToOne</span>
+  <span class="annotation">@JoinColumn</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">PERSON_ID</span><span class="delimiter">&quot;</span></span>)
+  <span class="directive">private</span> Person person;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="many to one relational twoway" height="110" src="../images/many-to-one-relational-twoway.png" width="254">
+</div>
+</div>
+</section>
+<section class="slide" id="wiele-do-wielu">
+<h2>Wiele do wielu</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:60%">
+<col style="width:40%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@ManyToMany</span>
+  <span class="directive">private</span> <span class="predefined-type">Collection</span>&lt;Address&gt;
+          addresses;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> addressId;
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="many to many" height="84" src="../images/many-to-many.png" width="450">
+</div>
+</div>
+</section>
+<section class="slide" id="wiele-do-wielu-2">
+<h2>Wiele do wielu (2)</h2>
+<table class="tableblock frame-none grid-none" style="width:100%">
+<colgroup>
+<col style="width:50%">
+<col style="width:50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Person</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> personId;
+
+  <span class="annotation">@ManyToMany</span>
+  <span class="directive">private</span> <span class="predefined-type">Collection</span>&lt;Address&gt;
+          addresses;
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Address</span> {
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> addressId;
+
+  <span class="annotation">@ManyToMany</span>(mappedBy=<span class="string"><span class="delimiter">&quot;</span><span class="content">addresses</span><span class="delimiter">&quot;</span></span>)
+  <span class="directive">private</span> <span class="predefined-type">Collection</span>&lt;Person&gt;
+          people;
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img alt="many to many twoway" height="84" src="../images/many-to-many-twoway.png" width="450">
+</div>
+</div>
+</section>
+<section class="slide" id="lazy-loading">
+<h2>Lazy loading</h2>
+<div class="ulist">
+<ul>
+<li>Dla encji będących w relacji oznacza, że załadowanie z bazy danych encji powiązanych odbędzie się dopiero w momencie pierwszego dostępu do nich</li>
+<li>Rodzaj ładowania określa atrybut <em>fetch</em> adnotacji <code>@OneToOne</code>, <code>@OneToMany</code>, <code>@ManyToOne</code>, <code>@ManyToMany</code>, a także <code>@Lob</code> i <code>@Basic</code></li>
+<li><p>
+Atrybut może przyjmować dwie wartości:<div class="ulist">
+<ul>
+<li><em>LAZY</em>: Ładowanie opóźnione (<em>lazy loading</em>)</li>
+<li><em>EAGER</em>: Wszystkie powiązania ładowane są natychmiast (<em>eager loading</em>)</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="lazy-loading-2">
+<h2>Lazy loading (2)</h2>
+<div class="ulist">
+<ul>
+<li>Ładowanie opóźnione możliwe jest tylko wtedy, gdy encja znajduje się w kontekście utrwalania</li>
+<li>Próba uzyskania dostępu do zależności ładowanej z opóźnienie zakończy się zgłoszeniem wyjątku LazyInitException</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="kaskadowość">
+<h2>Kaskadowość</h2>
+<div class="ulist">
+<ul>
+<li>Określa sposób, w jaki traktowane będą powiązane encje w momencie wywołania jednej z metod <code>persist()</code>, <code>merge()</code>, <code>remove()</code>, <code>refresh()</code> usługi utrwalania</li>
+<li>Sposób ten określa się za pomocą atrybutu cascade adnotacji <code>@OneToOne</code>, <code>@OneToMany</code>, <code>@ManyToOne</code>, <code>@ManyToMany</code></li>
+<li>Konkretny sposób wskazywany jest przez wartości typu <code>CascadeType</code></li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+        <span class="annotation">@ManyToMany</span>(cascade={
+                CascadeType.MERGE, CascadeType.PERSIST})
+        <span class="directive">private</span> <span class="predefined-type">Collection</span>&lt;Ticket&gt; tickets;
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="kaskadowość-2">
+<h2>Kaskadowość (2)</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<code>CascadeType.REMOVE</code><div class="ulist">
+<ul>
+<li>Jeśli usunięty zostanie właściciel relacji, to usunięte zostaną również encje zależne</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>CascadeType.PERSIST</code><div class="ulist">
+<ul>
+<li>Jeśli utrwalony zostanie właściciel relacji, to utrwalone zostaną również encje zależne</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>CascadeType.MERGE</code><div class="ulist">
+<ul>
+<li>Jeśli właściciel relacji zostanie przyłączony do kontekstu utrwalania, to przyłączone zostaną również encje zależne; jeśli któraś z encji zależny nie była jeszcze utrwalona, to zostanie utrwalona</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="kaskadowość-3">
+<h2>Kaskadowość (3)</h2>
+<div class="ulist">
+<ul>
+<li><p>
+<code>CascadeType.REFRESH</code><div class="ulist">
+<ul>
+<li>Jeśli właścicielowi relacji zostanie stan z bazy, to stanie się to również z encjami zależnymi</li>
+</ul>
+</div></p></li>
+<li><p>
+<code>CascadeType.ALL</code><div class="ulist">
+<ul>
+<li>Wszystkie powyższe jednocześnie</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="trochę-wątpliwości">
+<h2>Trochę wątpliwości</h2>
+<div class="ulist">
+<ul>
+<li>Łatwo stracić panowanie nad kaskadowością</li>
+<li>Ładownie opóźnione powoduje N+1 select problem</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="spis-treści-7">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li><strong>Dziedziczenie w JPA</strong></li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="mapowanie-dziedziczenia">
+<h2>Mapowanie dziedziczenia</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Są trzy sposoby odwzorowania dziedziczenia<div class="ulist">
+<ul>
+<li>Single Table per Class Hierarchy</li>
+<li>Table per Class</li>
+<li>Joined Subclass</li>
+</ul>
+</div></p></li>
+<li>Wybór strategii dotyczy całego drzewa hierarchii</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="single-table">
+<h2>Single table</h2>
+<div class="ulist">
+<ul>
+<li>Tworzona jest jedna tabela dla wszystkich klas</li>
+<li>Tabela zawiera kolumny odpowiadające wszystkim atrybutom wszystkich podklas</li>
+<li><p>
+Dodatkowa kolumna discriminator określa do której podklasy należy obiekt<div class="ulist">
+<ul>
+<li>Discriminator nie jest widoczny dla użytkownika, nie jest polem obiektu</li>
+<li>Jego wartość definiowana jest <em>explicite</em> dla każdej klasy w obrębie hierarchii dziedziczenia</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="single-table-2">
+<h2>Single table (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@Inheritance</span>(strategy=InheritanceType.SINGLE_TABLE) <b class="conum">(1)</b>
+<span class="annotation">@DiscriminatorColumn</span>(name=<span class="string"><span class="delimiter">&quot;</span><span class="content">taskType</span><span class="delimiter">&quot;</span></span>, <b class="conum">(2)</b>
+  discriminatorType=DiscriminatorType.STRING) <b class="conum">(3)</b>
+<span class="annotation">@DiscriminatorValue</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">simple</span><span class="delimiter">&quot;</span></span>) <b class="conum">(4)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Task</span> {
+        <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Określenie sposobu dziedziczenia</p>
+</li>
+<li>
+<p>Nazwa kolumny dla pola discriminator</p>
+</li>
+<li>
+<p>Określenie typu (ciąg znaków)</p>
+</li>
+<li>
+<p>Wartość dla danej klasy (ta adnotacja będzie powtarzana w kolejnych klasach)</p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="single-table-3">
+<h2>Single table (3)</h2>
+<div class="ulist">
+<ul>
+<li>Podklasy są podobne jeżeli chodzi o atrybuty i różnice występują w zachowaniu (metody)</li>
+<li>Podejście (mimo potencjalnego braku elegancji) jest najczęściej używane</li>
+<li>Jeżeli nie wiadomo na którą strategie się decydować, niewiele wiemy o złożoności modelu – single table jest najlepsze</li>
+<li>Wszystkie kolumny muszą być nullable</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="table-per-class">
+<h2>Table per class</h2>
+<div class="ulist">
+<ul>
+<li>Każdej klasie odpowiada pojedyncza tabela</li>
+<li>Tabela zawiera komplet atrybutów danego obiektu</li>
+<li>Każda podklasa posiada własny identyfikator</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@Inheritance</span>(strategy=InheritanceType.TABLE_PER_CLASS)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Task</span> {
+        <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="table-per-class-2">
+<h2>Table per class (2)</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Kolumna klasy nadrzędnej narzuca nazwy kolumn klasie podrzędnej<div class="ulist">
+<ul>
+<li>zmiana typu jednego pola w nadklasie powoduje konieczność ręcznego zrobienia tej zmiany we wszystkich podklasach</li>
+</ul>
+</div></p></li>
+<li>Identyfikator nie może być automatycznie generowany</li>
+<li><p>
+Na poziomie bazy danych nie widać jakiegokolwiek związku pomiędzy encjami<div class="ulist">
+<ul>
+<li>W przypadku agregacji konieczność wygenerowania n zapytań dla n klas</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="joined-subclass">
+<h2>Joined subclass</h2>
+<div class="ulist">
+<ul>
+<li>Tabela podklasy zawiera tylko różnice względem nadklasy</li>
+<li>Normalizacja tabel, przejrzystość modelu oraz zachowanie modelu obiektowego</li>
+<li>Klucz główny współdzielony jest pomiędzy nadklasą i podklasą</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@Inheritance</span>(strategy=InheritanceType.JOINED)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Task</span> {
+        <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="joined-subclass-2">
+<h2>Joined subclass (2)</h2>
+<div class="ulist">
+<ul>
+<li>Wierne odwzorowanie modelu obiektowego w bazie danych</li>
+<li>Przejrzyste modelowanie pomiędzy poszczególnymi podklasami – każda tabela ma swój klucz</li>
+<li><p>
+Pobranie wszystkich wartości z całej hierarchii wymaga skomplikowanego zapytania (outer-join) po wielu tabelach<div class="ulist">
+<ul>
+<li>Niedopuszczalnie niska wydajność</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="mappedsuperclass">
+<h2>@MappedSuperclass</h2>
+<div class="ulist">
+<ul>
+<li>Definicja encji następuję w podklasach</li>
+<li>Klasa bazowa zawiera informacje o relacjach, sama w sobie nie jest jednak encją</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@MappedSuperclass</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">BaseEntity</span> {
+        <span class="annotation">@Basic</span>
+        <span class="annotation">@Temporal</span>(TemporalType.TIMESTAMP)
+        <span class="directive">private</span> <span class="predefined-type">Date</span> lastUpdate;
+        <span class="directive">private</span> <span class="predefined-type">String</span> lastUpdater;
+
+        <span class="comment">//...</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="mappedsuperclass-2">
+<h2>@MappedSuperclass (2)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Order</span> <span class="directive">extends</span> BaseEntity {
+        <span class="annotation">@Id</span> <b class="conum">(1)</b>
+        <span class="directive">private</span> <span class="predefined-type">Integer</span> id;
+        <span class="comment">//...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Dopiero w klasie nadrzędnej definiujemy atrybut <code>@Id</code></p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="spis-treści-8">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li>Dziedziczenie w JPA</li>
+<li><strong>Zdarzenia zwrotne i klasy nasłuchujące</strong></li>
+<li>Blokowanie obiektów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="zdarzenia-zwrotne">
+<h2>Zdarzenia zwrotne</h2>
+<div class="ulist">
+<ul>
+<li><p>
+Encja może przechwycić operacje wykonywanie na niej przez usługę utrwalania jeśli udostępni metody oznaczone odpowiednio:<div class="ulist">
+<ul>
+<li><code>@PrePersist</code></li>
+<li><code>@PostPersist</code></li>
+<li><code>@PostLoad</code></li>
+<li><code>@PreUpdate</code></li>
+<li><code>@PostUpdate</code></li>
+<li><code>@PreRemove</code></li>
+<li><code>@PostRemove</code></li>
+</ul>
+</div></p></li>
+<li>Metoda powinna być bezargumentowa, typu void i nie deklarująca wyrzucania wyjątków checked</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="klasy-nasłuchujące">
+<h2>Klasy nasłuchujące</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">class</span> <span class="class">UserListener</span> {
+        <span class="annotation">@PostPersist</span>
+        <span class="directive">public</span> <span class="type">void</span> afterPersist(User entity) {
+                <span class="comment">//...</span>
+        }
+}
+
+<span class="annotation">@Entity</span>
+<span class="annotation">@EntityListeners</span>(UserListener.class) <b class="conum">(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+        <span class="comment">//...</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Metodą na przechwytywania zdarzeń utrwalania, która "nie zaśmieca" kodu encji jest zdefiniowanie klasy nasłuchującej</p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="wykorzystanie-postload">
+<h2>Wykorzystanie @PostLoad</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="annotation">@EntityListeners</span>(Listeners.class)
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+
+  <span class="directive">public</span> <span class="type">enum</span> UseSex {MALE, FEMALE}
+
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> id;
+
+  <span class="annotation">@Enumerated</span>(EnumType.ORDINAL) <b class="conum">(1)</b>
+  <span class="directive">private</span> UserSex sex;
+
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Wartość w bazie danych to <code>0</code> albo <code>1</code> - zamiast <code>M</code> i <code>F</code></p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="wykorzystanie-postload-2">
+<h2>Wykorzystanie @PostLoad</h2>
+<div class="listingblock">
+<div class="title">User.java</div>
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+
+  <span class="annotation">@Id</span>
+  <span class="directive">private</span> <span class="type">long</span> id;
+
+  <span class="annotation">@Transient</span>
+  <span class="directive">private</span> UserSex sex;
+
+  <span class="directive">private</span> <span class="predefined-type">String</span> db_sex;
+
+  <span class="comment">//..</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="wykorzystanie-postload-3">
+<h2>Wykorzystanie @PostLoad</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="directive">public</span> <span class="type">class</span> <span class="class">Listeners</span> {
+  <span class="annotation">@PostLoad</span>
+  <span class="directive">public</span> <span class="type">void</span> afterLoad(User user) {
+    <span class="keyword">switch</span>(user.getDbSex()){
+      <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">M</span><span class="delimiter">&quot;</span></span>: user.setSex(UserSex.MALE);
+      <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">F</span><span class="delimiter">&quot;</span></span>: user.setSex(UserSex.FEMALE);
+    }
+  }
+  <span class="annotation">@PrePersist</span>
+  <span class="directive">public</span> <span class="type">void</span> beforePersit(User user) {
+    <span class="keyword">switch</span>(user.getSex()){
+      <span class="keyword">case</span> MALE: user.setDbSex(<span class="string"><span class="delimiter">&quot;</span><span class="content">M</span><span class="delimiter">&quot;</span></span>);
+      <span class="keyword">case</span> FEMALE: user.setDbSex(<span class="string"><span class="delimiter">&quot;</span><span class="content">F</span><span class="delimiter">&quot;</span></span>);
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="konwertery-jpa-2-1">
+<h2>Konwertery JPA 2.1</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">User</span> {
+
+  <span class="directive">public</span> <span class="type">enum</span> UseSex {MALE, FEMALE}
+
+  <span class="annotation">@Convert</span>(converter = SexConverter.class) <b class="conum">(1)</b>
+  <span class="directive">private</span> UserSex sex; <b class="conum">(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Deklaracja konwertera</p>
+</li>
+<li>
+<p>Można używać</p>
+</li>
+</ol>
+</div>
+</section>
+<section class="slide" id="konwertery-jpa-2-1-2">
+<h2>Konwertery JPA 2.1</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Converter</span> <b class="conum">(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">SexConverter</span>
+  <span class="directive">implements</span> AttributeConverter&lt;UserSex, <span class="predefined-type">String</span>&gt; { <b class="conum">(2)</b>
+  <span class="directive">public</span> <span class="predefined-type">String</span> convertToDatabaseColumn(UserSex arg0) {
+    <span class="keyword">switch</span>(arg0){
+      <span class="keyword">case</span> MALE: <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">M</span><span class="delimiter">&quot;</span></span>;
+      <span class="keyword">case</span> FEMALE: <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">F</span><span class="delimiter">&quot;</span></span>;
+    }
+  }
+  <span class="directive">public</span> UserSex convertToEntityAttribute(<span class="predefined-type">String</span> arg0) {
+    <span class="keyword">switch</span>(arg0){
+      <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">M</span><span class="delimiter">&quot;</span></span>: <span class="keyword">return</span> UserSex.MALE;
+      <span class="keyword">case</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">F</span><span class="delimiter">&quot;</span></span>: <span class="keyword">return</span> UserSex.FEMALE;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</section>
+<section class="slide" id="spis-treści-9">
+<h2>Spis treści</h2>
+<div class="ulist">
+<ul>
+<li>Mapowanie encji</li>
+<li>Konfiguracja dostępu do bazy danych</li>
+<li>Cykl życia obiektów w bazie danych</li>
+<li><p>
+Budowanie zapytań w JPA<div class="ulist">
+<ul>
+<li>Criteria API</li>
+</ul>
+</div></p></li>
+<li>Wsparcie dla transakcji</li>
+<li>Mapowanie relacji po stronie bazy danych</li>
+<li>Dziedziczenie w JPA</li>
+<li>Zdarzenia zwrotne i klasy nasłuchujące</li>
+<li><strong>Blokowanie obiektów</strong></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="blokowanie-obiektów">
+<h2>Blokowanie obiektów</h2>
+<div class="ulist">
+<ul>
+<li><p>
+pesymistyczne (ang. <em>pessimistic locking</em>)<div class="ulist">
+<ul>
+<li>blokowanie na wyłączność</li>
+<li>zakłada brak interferencji pomiędzy transakcjami.</li>
+</ul>
+</div></p></li>
+<li><p>
+optymistyczne (ang. <em>optimistic locking</em>)<div class="ulist">
+<ul>
+<li>dopuszczające możliwość zmiany z zewnątrz</li>
+<li>zakłada się małe prawdopodobieństwo równoległego zapisu</li>
+<li>przewiduje mechanizmy wyjścia z niekorzystnej sytuacji</li>
+</ul>
+</div></p></li>
+</ul>
+</div>
+</section>
+<section class="slide" id="blokowanie-obiektów-2">
+<h2>Blokowanie obiektów (2)</h2>
+<div class="ulist">
+<ul>
+<li>Bez dodatkowej konfiguracji JPA nie przewiduje jakiegokolwiek blokowania - obiekty mogą się wzajemnie nadpisywać</li>
+<li>Możliwe jest optymistyczne blokowanie – przed zapisem JPA sprawdza czy wiersz nie został już zmieniony</li>
+<li>Adnotacja <code>@Version</code> na polu numerycznym lub <code>Timestamp</code></li>
+<li><code>javax.persistence.OptimisticLockException</code> przerywa transakcję w razie jakichkolwiek problemów</li>
+</ul>
+</div>
+</section>
+<section class="slide" id="blokowanie-obiektów-3">
+<h2>Blokowanie obiektów (3)</h2>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java"><span class="annotation">@Entity</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Phone</span> {
+<span class="error"> </span>
+        <span class="annotation">@Id</span>
+        <span class="directive">private</span> <span class="type">long</span> phoneId;
+        <span class="directive">private</span> <span class="predefined-type">String</span> number;
+        <span class="directive">private</span> <span class="predefined-type">String</span> extension;
+
+        <span class="annotation">@Version</span>
+        <span class="directive">private</span> <span class="predefined-type">Long</span> version;
+        <span class="error"> </span>
+        <span class="comment">//... getters and setters</span>
+}</code></pre>
+</div>
+</div>
+</section>
+<div aria-role="navigation">
+<a class="deck-prev-link" href="#" title="Previous">&#8592;</a>
+<a class="deck-next-link" href="#" title="Next">&#8594;</a>
+</div>
+<p aria-role="status" class="deck-status">
+<span class="deck-status-current"></span>
+/
+<span class="deck-status-total"></span>
+</p>
+</div>
+<script src="../deck.js/jquery.min.js"></script>
+<script src="../deck.js/core/deck.core.js"></script>
+<script src="../deck.js/extensions/scale/deck.scale.js"></script>
+<script src="../deck.js/extensions/menu/deck.menu.js"></script>
+<script src="../deck.js/extensions/navigation/deck.navigation.js"></script>
+<script src="../deck.js/extensions/status/deck.status.js"></script>
+<script>
+  (function($, deck, undefined) {
+    $.deck.defaults.keys['previous'] = [8, 33, 37, 39];
+    $.deck.defaults.keys['next'] = [13, 32, 34, 39];
+  
+    $.extend(true, $[deck].defaults, {
+        countNested: false
+    });
+  
+    $.deck('.slide');
+  })(jQuery, 'deck');
+</script>
+<style>
+  .slide.canvas-image {
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  display: -moz-box;
+  display: -webkit-box;
+  display: -ms-box;
+  display: box;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+  -ms-box-orient: vertical;
+  box-orient: vertical;
+  -moz-box-align: start;
+  -webkit-box-align: start;
+  -ms-box-align: start;
+  box-align: start;
+  -moz-box-pack: start;
+  -webkit-box-pack: start;
+  -ms-box-pack: start;
+  box-pack: start;}
+  
+  .bottom-left {
+    left: 1%;
+    bottom: 20%; }
+  
+  .top-left {
+    left: 1%;
+    top: 20%; }
+  
+  .bottom-right {
+    right: 1%;
+    bottom: 20%; }
+  
+  .top-right {
+    right: 1%;
+    top: 20%; }
+  
+  .center-up {
+    right: 50%;
+    top: 1%;
+  }
+  
+  .center-down {
+    right: 50%;
+    bottom: 1%;
+  }
+  .canvas-image .canvas-caption p {
+    text-align: center;
+    padding-top: 0;
+    padding: 0;
+    -moz-transform: none;
+    -webkit-transform: none;
+    -o-transform: none;
+    -ms-transform: none;
+    transform: none;
+    display: inline;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    font-weight: bold;
+    font-size: 58px;
+    -webkit-box-shadow: 2px 2px 2px #000;
+    -moz-box-shadow: 2px 2px 2px #000;
+    box-shadow: 2px 2px 2px #000;
+    padding: 1rem;
+    color: white; }
+  kbd.keyseq { color: #555555; }
+  kbd:not(.keyseq) {
+    display: inline-block;
+    color: #222222;
+    font-size: 0.7em;
+    line-height: 1.4;
+    background-color: #F7F7F7;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 0 0 2px white inset;
+    margin: -0.15em 0.15em 0 0.15em;
+    padding: 0.2em 0.6em;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  kbd kbd:first-child { margin-left: 0; }
+  kbd kbd:last-child { margin-right: 0; }
+</style>
+</body>
+</html>

@@ -12,8 +12,7 @@ public class AppTest {
 
     @Test
     public void tst() throws IOException {
-        App app = new App();
-        app.dictionary = new Dictionary();
+        App app = new App(new Dictionary());
 
         List<DictionaryWord> translations = app.getTranslations("dom");
     }

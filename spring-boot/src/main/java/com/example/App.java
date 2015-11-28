@@ -18,11 +18,18 @@ import java.util.List;
 @ComponentScan
 public class App {
 
-    @Autowired
-    Dictionary dictionary;
+    private Dictionary dictionary;
+    private TranslationRepository repo;
 
     @Autowired
-    TranslationRepository repo;
+    public App(Dictionary dictionary) {
+        this.dictionary = dictionary;
+    }
+
+    @Autowired
+    public void setRepo(TranslationRepository repo) {
+        this.repo = repo;
+    }
 
     @RequestMapping("/test")
     public String foo() {

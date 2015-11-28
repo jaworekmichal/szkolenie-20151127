@@ -32,15 +32,7 @@ public class App {
 
     @RequestMapping("/translate/{word}")
     public List<DictionaryWord> getTranslations(@PathVariable("word") String word) throws IOException {
-        List<DictionaryWord> translations = dictionary.getTranslations(word);
-
-        TranslationLog log = new TranslationLog();
-        log.setPolishWord(word);
-        log.setDate(new Date());
-        log.setCnt(translations.size());
-        repo.save(log);
-
-        return translations;
+        return dictionary.getTranslations(word);
     }
 
     @RequestMapping("/logs")
